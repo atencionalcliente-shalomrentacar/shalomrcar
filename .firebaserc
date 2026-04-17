@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "shalomrentacar-fd7c6"
+    "default": "shalomrcarmant"
   },
   "targets": {
-    "shalomrentacar-fd7c6": {
+    "shalomrcarmant": {
       "hosting": {
         "default": [
-          "shalomrentacar-fd7c6"
+          "shalomrcarmant"
         ]
       }
     }
