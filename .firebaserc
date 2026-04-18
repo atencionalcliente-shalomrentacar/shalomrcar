@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "shalomrcarmant-2cbc4"
+    "default": "shalomrcarmant"
   },
   "targets": {
-    "shalomrcarmant-2cbc4": {
+    "shalomrcarmant": {
       "hosting": {
         "default": [
-          "shalomrcarmant-2cbc4"
+          "shalomrcarmant"
         ]
       }
     }
