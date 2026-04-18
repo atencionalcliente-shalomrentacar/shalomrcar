@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "shalomrcarmant"
+    "default": "shalomrcarmant.firebaseapp"
   },
   "targets": {
     "shalomrcarmant": {
       "hosting": {
         "default": [
-          "shalomrcarmant"
+          "shalomrcarmant.firebaseapp"
         ]
       }
     }

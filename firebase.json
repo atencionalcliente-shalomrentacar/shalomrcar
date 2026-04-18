@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "shalomrcarmant",
+    "site": "shalomrcarmant.firebaseapp",
     "public": "./",
     "ignore": [
       "firebase.json",
