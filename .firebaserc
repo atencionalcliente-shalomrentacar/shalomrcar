@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "shalomrcarmant.firebaseapp"
+    "default": "shalomrentacar-fd7c6"
   },
   "targets": {
-    "shalomrcarmant": {
+    "shalomrentacar-fd7c6": {
       "hosting": {
         "default": [
-          "shalomrcarmant.firebaseapp"
+          "shalomrentacar-fd7c6"
         ]
       }
     }
