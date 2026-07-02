@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Mantenimiento | Shalom Rent a Car</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-panel: #1e293b;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #f59e0b;
+            --accent-hover: #d97706;
+            --success: #10b981;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --warning: #f59e0b;
+            --mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* ===== NAVBAR TIPO SISTEMA INDUSTRIAL ===== */
+        .navbar-system {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            border-bottom: 3px solid var(--accent);
+            padding: 0;
+            min-height: 64px;
+        }
+
+        .navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            height: 64px;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid var(--accent);
+        }
+
+        .logo-container img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn-view-site {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view-site:hover {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        /* ===== LAYOUT PRINCIPAL ===== */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* ===== SIDEBAR TIPO CONSOLA DB ===== */
+        .sidebar {
+            background: var(--bg-panel);
+            border-right: 1px solid #334155;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-section {
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1.5rem;
+        }
+
+        .sidebar-title {
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-title iconify-icon {
+            color: var(--accent);
+        }
+
+        .db-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .db-metric:last-child {
+            border-bottom: none;
+        }
+
+        .db-metric-label {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .db-metric-value {
+            color: white;
+            font-family: var(--mono);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .db-metric-value.success { color: var(--success); }
+        .db-metric-value.warning { color: var(--warning); }
+        .db-metric-value.danger { color: var(--danger); }
+
+        .connection-bar {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .connection-icon {
+            color: var(--success);
+            font-size: 1.25rem;
+        }
+
+        .connection-info {
+            flex: 1;
+        }
+
+        .connection-label {
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+
+        .connection-status {
+            color: var(--success);
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: var(--mono);
+        }
+
+        .db-activity {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+
+        .activity-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .activity-time {
+            color: #64748b;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            min-width: 50px;
+        }
+
+        .activity-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .activity-dot.insert { background: var(--success); }
+        .activity-dot.update { background: var(--info); }
+        .activity-dot.delete { background: var(--danger); }
+
+        /* ===== CONTENT AREA ===== */
+        .content-area {
+            padding: 1.5rem;
+            overflow-x: hidden;
+        }
+
+        /* ===== TOOLBAR TIPO DB ADMIN ===== */
+        .toolbar-db {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .table-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .table-title iconify-icon {
+            color: var(--accent);
+        }
+
+        .record-count {
+            background: #f1f5f9;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-family: var(--mono);
+            font-weight: 500;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .search-db {
+            position: relative;
+            width: 280px;
+        }
+
+        .search-db input {
+            width: 100%;
+            padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: #f8fafc;
+            font-family: var(--mono);
+            transition: all 0.2s;
+        }
+
+        .search-db input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .search-db iconify-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .btn-db {
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-db-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-db-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-db-outline {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .btn-db-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .file-input-db {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-db input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-label-db {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .file-label-db:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ===== TABLA TIPO DB CONSOLE ===== */
+        .table-wrapper {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .db-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .db-table thead {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: #e2e8f0;
+        }
+
+        .db-table thead th {
+            padding: 0.875rem 1rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--accent);
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .db-table tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.15s;
+        }
+
+        .db-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .db-table tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .db-table tbody tr:nth-child(even):hover {
+            background: #f1f5f9;
+        }
+
+        .db-table td {
+            padding: 0.875rem 1rem;
+            vertical-align: middle;
+        }
+
+        .cell-img {
+            width: 80px;
+        }
+
+        .vehicle-thumb {
+            width: 80px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: #f1f5f9;
+        }
+
+        .cell-vehicle {
+            min-width: 180px;
+        }
+
+        .vehicle-name-db {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .vehicle-specs {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            font-family: var(--mono);
+        }
+
+        .cell-mono {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .cell-path {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cell-path.missing {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-db {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: var(--mono);
+        }
+
+        .badge-db.operativo {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-db.mantenimiento {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-db.revision {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .actions-db {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-action-db {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .btn-edit-db {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-edit-db:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-delete-db {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-delete-db:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-db {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-db iconify-icon {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        /* Pagination */
+        .pagination-db {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .page-db {
+            min-width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--mono);
+        }
+
+        .page-db:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .page-db.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-dark);
+            font-weight: 700;
+        }
+
+        .page-db:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ===== MODAL TIPO FORM DB ===== */
+        .modal-content-db {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .modal-header-db {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .modal-title-db {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-title-db iconify-icon {
+            color: var(--accent);
+        }
+
+        .modal-body-db {
+            padding: 2rem;
+            background: #f8fafc;
+        }
+
+        .form-section-db {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section-title iconify-icon {
+            color: var(--accent);
+        }
+
+        .form-label-db {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control-db {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-control-db:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+        }
+
+        .form-select-db {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0.625rem 2rem 0.625rem 0.875rem;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        .preview-box-db {
+            width: 100%;
+            height: 180px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .preview-box-db img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-placeholder-db {
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .modal-footer-db {
+            padding: 1.25rem 2rem;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* Toast */
+        .toast-container-db {
+            position: fixed;
+            top: 80px;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toast-db {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.875rem;
+            min-width: 320px;
+            max-width: 400px;
+            animation: slideInDb 0.3s ease;
+            border-left: 4px solid var(--success);
+        }
+
+        .toast-db.error { border-left-color: var(--danger); }
+        .toast-db.warning { border-left-color: var(--warning); }
+        .toast-db.info { border-left-color: var(--info); }
+
+        @keyframes slideInDb {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast-icon-db {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        .toast-content-db {
+            flex: 1;
+        }
+
+        .toast-title-db {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .toast-msg-db {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Loading */
+        .loading-overlay-db {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .spinner-db {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #334155;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spinDb 1s linear infinite;
+        }
+
+        @keyframes spinDb {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text-db {
+            color: #94a3b8;
+            margin-top: 1rem;
+            font-family: var(--mono);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .toolbar-db {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar-right {
+                flex-direction: column;
+            }
+            .search-db {
+                width: 100%;
+            }
+            .db-table {
+                font-size: 0.8rem;
+            }
+            .db-table td, .db-table th {
+                padding: 0.625rem 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar-system">
+        <div class="navbar-inner">
+            <div class="brand-section">
+                <div class="logo-container">
+                    <img src="images/logo.jpeg" alt="Shalom Rent a Car" onerror="this.style.display='none'; this.parentElement.innerHTML='<iconify-icon icon=mdi:car style=color:#f59e0b;font-size:1.5rem;></iconify-icon>'">
+                </div>
+                <div class="brand-text">
+                    <div class="brand-title">Shalom Rent a Car</div>
+                    <div class="brand-subtitle">Sistema de Mantenimiento DB</div>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="system-status d-none d-md-flex">
+                    <div class="status-dot"></div>
+                    <span>Firebase Online</span>
+                </div>
+                <a href="index.html" class="btn-view-site">
+                    <iconify-icon icon="mdi:web"></iconify-icon>
+                    Ver Sitio Web
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <iconify-icon icon="mdi:database-cog"></iconify-icon>
+                    Estado de Conexión
+                </div>
+                <div class="connection-bar">
+                    <iconify-icon icon="mdi:server-network" class="connection-icon"></iconify-icon>
+                    <div class="connection-info">
+                        <div class="connection-label">Base de Datos</div>
+                        <div class="connection-status">● Conectado</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <iconify-icon icon="mdi:chart-bar"></iconify-icon>
+                    Métricas de Inventario
+                </div>
+                <div class="db-metric">
+                    <span class="db-metric-label">
+                        <iconify-icon icon="mdi:car-multiple" width="16"></iconify-icon>
+                        Registros
+                    </span>
+                    <span class="db-metric-value" id="metricTotal">0</span>
+                </div>
+                <div class="db-metric">
+                    <span class="db-metric-label">
+                        <iconify-icon icon="mdi:image-check" width="16"></iconify-icon>
+                        Con Imagen
+                    </span>
+                    <span class="db-metric-value success" id="metricWithImg">0</span>
+                </div>
+                <div class="db-metric">
+                    <span class="db-metric-label">
+                        <iconify-icon icon="mdi:image-off" width="16"></iconify-icon>
+                        Sin Imagen
+                    </span>
+                    <span class="db-metric-value warning" id="metricWithoutImg">0</span>
+                </div>
+                <div class="db-metric">
+                    <span class="db-metric-label">
+                        <iconify-icon icon="mdi:clock-outline" width="16"></iconify-icon>
+                        Última Sync
+                    </span>
+                    <span class="db-metric-value" id="metricLastSync">--:--</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section" style="border-bottom: none;">
+                <div class="sidebar-title">
+                    <iconify-icon icon="mdi:history"></iconify-icon>
+                    Actividad Reciente
+                </div>
+                <div class="db-activity" id="activityLog">
+                    <div class="activity-item">
+                        <span class="activity-time">--:--</span>
+                        <div class="activity-dot insert"></div>
+                        <span>Sistema iniciado</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content -->
+        <main class="content-area">
+            <!-- Toolbar -->
+            <div class="toolbar-db">
+                <div class="toolbar-left">
+                    <h4 class="table-title">
+                        <iconify-icon icon="mdi:table-large"></iconify-icon>
+                        Inventario de Vehículos
+                    </h4>
+                    <span class="record-count" id="recordCount">0 registros</span>
+                </div>
+                <div class="toolbar-right">
+                    <div class="search-db">
+                        <iconify-icon icon="mdi:magnify" width="18"></iconify-icon>
+                        <input type="text" id="searchInput" placeholder="Buscar vehículo, color, motor...">
+                    </div>
+                    
+                    <div class="file-input-db">
+                        <input type="file" id="fileUpload" accept=".xlsx, .xls, .csv">
+                        <label for="fileUpload" class="file-label-db" id="fileLabel">
+                            <iconify-icon icon="mdi:file-upload"></iconify-icon>
+                            <span>Excel/CSV</span>
+                        </label>
+                    </div>
+                    
+                    <button class="btn-db btn-db-outline" onclick="importExcel()" id="btnImport">
+                        <iconify-icon icon="mdi:database-import"></iconify-icon>
+                        Importar
+                    </button>
+                    
+                    <button class="btn-db btn-db-primary" onclick="openModal()">
+                        <iconify-icon icon="mdi:plus-circle"></iconify-icon>
+                        Nuevo Registro
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <div class="table-responsive">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Vehículo</th>
+                                <th>Color</th>
+                                <th>Motor/Tracción</th>
+                                <th>Transmisión</th>
+                                <th>A/C</th>
+                                <th>Ruta Imagen</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-db" id="pagination" style="display: none;"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="vehicleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content modal-content-db">
+                <div class="modal-header modal-header-db">
+                    <h5 class="modal-title modal-title-db" id="modalTitle">
+                        <iconify-icon icon="mdi:database-plus"></iconify-icon>
+                        Nuevo Registro
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body modal-body-db">
+                    <form id="vehicleForm">
+                        <input type="hidden" id="vehicleId">
+                        
+                        <div class="form-section-db">
+                            <div class="form-section-title">
+                                <iconify-icon icon="mdi:car-info"></iconify-icon>
+                                Datos del Vehículo
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-db">Vehículo *</label>
+                                    <input type="text" class="form-control form-control-db" id="f_vehiculo" required placeholder="Ej: Kia Soul 2023">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-db">Color</label>
+                                    <input type="text" class="form-control form-control-db" id="f_color" placeholder="Ej: Rojo Metalizado">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-db">Motor / Tracción</label>
+                                    <input type="text" class="form-control form-control-db" id="f_motor" placeholder="Ej: 2.0L 4x2">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-db">Transmisión</label>
+                                    <select class="form-select form-select-db" id="f_transmision">
+                                        <option value="">-- Seleccionar --</option>
+                                        <option value="Automática">Automática</option>
+                                        <option value="Manual">Manual</option>
+                                        <option value="CVT">CVT</option>
+                                        <option value="DCT">DCT</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-db">Aire Acondicionado</label>
+                                    <select class="form-select form-select-db" id="f_ac">
+                                        <option value="">-- Seleccionar --</option>
+                                        <option value="Sí">Sí</option>
+                                        <option value="No">No</option>
+                                        <option value="Dual Zone">Dual Zone</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-db">Estado</label>
+                                    <select class="form-select form-select-db" id="f_estado">
+                                        <option value="Operativo">Operativo</option>
+                                        <option value="En Mantenimiento">En Mantenimiento</option>
+                                        <option value="Revisión Pendiente">Revisión Pendiente</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section-db">
+                            <div class="form-section-title">
+                                <iconify-icon icon="mdi:clipboard-text"></iconify-icon>
+                                Especificaciones Adicionales
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-db">Características Especiales</label>
+                                    <input type="text" class="form-control form-control-db" id="f_caracteristicas" placeholder="GPS, Bluetooth, Cámara retro...">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-db">Seguro y Asistencia</label>
+                                    <input type="text" class="form-control form-control-db" id="f_seguro" placeholder="Cobertura total, asistencia 24h...">
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label-db">Otros / Notas Técnicas</label>
+                                    <input type="text" class="form-control form-control-db" id="f_otros" placeholder="Observaciones adicionales...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section-db" style="margin-bottom: 0;">
+                            <div class="form-section-title">
+                                <iconify-icon icon="mdi:image"></iconify-icon>
+                                Gestión de Imagen
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label-db">Ruta de Archivo (carpeta /images/)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light" style="font-family: var(--mono); font-size: 0.8rem;">images/</span>
+                                    <input type="text" class="form-control form-control-db" id="f_ruta_imagen" placeholder="nombre-archivo.jpg" oninput="previewImage()">
+                                </div>
+                                <div class="preview-box-db" id="imagePreview">
+                                    <div class="preview-placeholder-db">
+                                        <iconify-icon icon="mdi:image-off" width="48" style="color: #cbd5e1;"></iconify-icon>
+                                        <p class="mb-0 mt-2" style="font-size: 0.875rem;">Vista previa no disponible</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer modal-footer-db">
+                    <button type="button" class="btn-db btn-db-outline" data-bs-dismiss="modal">
+                        <iconify-icon icon="mdi:close"></iconify-icon>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn-db btn-db-primary" onclick="saveVehicle()">
+                        <iconify-icon icon="mdi:content-save"></iconify-icon>
+                        Guardar en DB
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container-db" id="toastContainer"></div>
+
+    <!-- Loading -->
+    <div class="loading-overlay-db" id="loadingOverlay" style="display: none;">
+        <div class="spinner-db"></div>
+        <div class="loading-text-db">Sincronizando con Firebase...</div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        let dbUrl = "";
+        let vehiculosData = {};
+        let filteredData = {};
+        const modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        let activityLog = [];
+
+        // Initialize
+        async function init() {
+            try {
+                if (typeof config !== 'undefined' && config.databaseURL) {
+                    dbUrl = config.databaseURL;
+                    addActivity('connect', 'Conexión establecida con Firebase');
+                    await loadVehicles();
+                } else {
+                    throw new Error("Variable de configuración no encontrada");
+                }
+            } catch (error) {
+                showToast('Error de Conexión', 'No se pudo leer config.js', 'error');
+                addActivity('error', 'Fallo de conexión con Firebase');
+            }
+        }
+
+        // Load Data
+        async function loadVehicles() {
+            showLoading(true);
+            try {
+                const res = await fetch(`${dbUrl}vehiculos.json`);
+                const data = await res.json();
+                vehiculosData = data || {};
+                filteredData = { ...vehiculosData };
+                updateMetrics();
+                renderTable();
+                addActivity('sync', `Inventario sincronizado: ${Object.keys(vehiculosData).length} registros`);
+            } catch (error) {
+                console.error("Error al cargar:", error);
+                showToast('Error DB', 'No se pudieron cargar los registros', 'error');
+                addActivity('error', 'Error al sincronizar inventario');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Update Sidebar Metrics
+        function updateMetrics() {
+            const vehicles = Object.values(vehiculosData);
+            const total = vehicles.length;
+            const withImg = vehicles.filter(v => v.Ruta_Imagen && v.Ruta_Imagen.trim() !== '').length;
+            
+            document.getElementById('metricTotal').textContent = total;
+            document.getElementById('metricWithImg').textContent = withImg;
+            document.getElementById('metricWithoutImg').textContent = total - withImg;
+            document.getElementById('metricLastSync').textContent = new Date().toLocaleTimeString('es-ES', {
+                hour: '2-digit', minute: '2-digit'
+            });
+            document.getElementById('recordCount').textContent = `${total} registros`;
+        }
+
+        // Activity Log
+        function addActivity(type, message) {
+            const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            activityLog.unshift({ time, type, message });
+            if (activityLog.length > 6) activityLog.pop();
+            renderActivityLog();
+        }
+
+        function renderActivityLog() {
+            const container = document.getElementById('activityLog');
+            container.innerHTML = activityLog.map(item => `
+                <div class="activity-item">
+                    <span class="activity-time">${item.time}</span>
+                    <div class="activity-dot ${item.type}"></div>
+                    <span>${item.message}</span>
+                </div>
+            `).join('');
+        }
+
+        // Render Table
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            const keys = Object.keys(filteredData);
+            
+            if (keys.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="empty-db">
+                            <iconify-icon icon="mdi:database-off"></iconify-icon>
+                            <h5 class="mt-3">No hay registros en la base de datos</h5>
+                            <p class="text-muted">Crea un nuevo registro o importa desde Excel/CSV</p>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            const totalPages = Math.ceil(keys.length / ITEMS_PER_PAGE);
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const paginatedKeys = keys.slice(start, start + ITEMS_PER_PAGE);
+
+            paginatedKeys.forEach(key => {
+                const v = filteredData[key];
+                const imagePath = v.Ruta_Imagen ? `images/${v.Ruta_Imagen}` : '';
+                const estado = v.Estado || 'Operativo';
+                
+                const estadoClass = estado === 'Operativo' ? 'operativo' : 
+                                   estado === 'En Mantenimiento' ? 'mantenimiento' : 'revision';
+                
+                const estadoIcon = estado === 'Operativo' ? 'mdi:check-circle' : 
+                                  estado === 'En Mantenimiento' ? 'mdi:wrench' : 'mdi:alert';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="cell-img">
+                        ${imagePath ? 
+                            `<img src="${imagePath}" class="vehicle-thumb" alt="${v.Vehiculo}" onerror="this.parentElement.innerHTML='<div class=\'d-flex align-items-center justify-content-center bg-light rounded\' style=\'width:80px;height:56px\'><iconify-icon icon=\'mdi:image-off\' color=\'#cbd5e1\'></iconify-icon></div>'">` :
+                            `<div class="d-flex align-items-center justify-content-center bg-light rounded" style="width:80px;height:56px">
+                                <iconify-icon icon="mdi:image-off" color="#cbd5e1"></iconify-icon>
+                            </div>`
+                        }
+                    </td>
+                    <td class="cell-vehicle">
+                        <div class="vehicle-name-db">${v.Vehiculo || '-'}</div>
+                        ${v.Caracteristicas ? `<div class="vehicle-specs">${v.Caracteristicas}</div>` : ''}
+                    </td>
+                    <td class="cell-mono">${v.Color || '-'}</td>
+                    <td class="cell-mono">${v.Motor_Traccion || '-'}</td>
+                    <td class="cell-mono">${v.Transmision || '-'}</td>
+                    <td class="cell-mono">${v.Aire_Acondicionado || '-'}</td>
+                    <td>
+                        <span class="cell-path ${!v.Ruta_Imagen ? 'missing' : ''}">
+                            ${v.Ruta_Imagen || 'No asignada'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge-db ${estadoClass}">
+                            <iconify-icon icon="${estadoIcon}" width="14"></iconify-icon>
+                            ${estado}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions-db">
+                            <button class="btn-action-db btn-edit-db" onclick="openModal('${key}')" title="Editar registro">
+                                <iconify-icon icon="mdi:pencil" width="16"></iconify-icon>
+                            </button>
+                            <button class="btn-action-db btn-delete-db" onclick="deleteVehicle('${key}')" title="Eliminar registro">
+                                <iconify-icon icon="mdi:trash-can" width="16"></iconify-icon>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderPagination(totalPages);
+        }
+
+        // Pagination
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            let html = `
+                <button class="page-db" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <iconify-icon icon="mdi:chevron-left"></iconify-icon>
+                </button>
+            `;
+            
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button class="page-db ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span class="page-db" style="cursor: default; border: none;">...</span>`;
+                }
+            }
+            
+            html += `
+                <button class="page-db" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    <iconify-icon icon="mdi:chevron-right"></iconify-icon>
+                </button>
+            `;
+            
+            pagination.innerHTML = html;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderTable();
+        }
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            if (!query) {
+                filteredData = { ...vehiculosData };
+            } else {
+                filteredData = {};
+                Object.keys(vehiculosData).forEach(key => {
+                    const v = vehiculosData[key];
+                    if ((v.Vehiculo && v.Vehiculo.toLowerCase().includes(query)) ||
+                        (v.Color && v.Color.toLowerCase().includes(query)) ||
+                        (v.Motor_Traccion && v.Motor_Traccion.toLowerCase().includes(query)) ||
+                        (v.Estado && v.Estado.toLowerCase().includes(query))) {
+                        filteredData[key] = v;
+                    }
+                });
+            }
+            currentPage = 1;
+            renderTable();
+        });
+
+        // File Input
+        document.getElementById('fileUpload').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || 'Excel/CSV';
+            document.getElementById('fileLabel').innerHTML = `
+                <iconify-icon icon="mdi:file-excel"></iconify-icon>
+                <span>${fileName.length > 15 ? fileName.substring(0, 15) + '...' : fileName}</span>
+            `;
+        });
+
+        // Open Modal
+        function openModal(key = null) {
+            document.getElementById('vehicleForm').reset();
+            document.getElementById('imagePreview').innerHTML = `
+                <div class="preview-placeholder-db">
+                    <iconify-icon icon="mdi:image-off" width="48" style="color: #cbd5e1;"></iconify-icon>
+                    <p class="mb-0 mt-2">Vista previa no disponible</p>
+                </div>
+            `;
+            
+            if (key && vehiculosData[key]) {
+                document.getElementById('modalTitle').innerHTML = `
+                    <iconify-icon icon="mdi:database-edit"></iconify-icon>
+                    Editar Registro
+                `;
+                document.getElementById('vehicleId').value = key;
+                const v = vehiculosData[key];
+                
+                document.getElementById('f_vehiculo').value = v.Vehiculo || '';
+                document.getElementById('f_color').value = v.Color || '';
+                document.getElementById('f_motor').value = v.Motor_Traccion || '';
+                document.getElementById('f_transmision').value = v.Transmision || '';
+                document.getElementById('f_ac').value = v.Aire_Acondicionado || '';
+                document.getElementById('f_estado').value = v.Estado || 'Operativo';
+                document.getElementById('f_caracteristicas').value = v.Caracteristicas || '';
+                document.getElementById('f_seguro').value = v.Seguro_Asistencia || '';
+                document.getElementById('f_otros').value = v.Otros || '';
+                document.getElementById('f_ruta_imagen').value = v.Ruta_Imagen || '';
+                
+                if (v.Ruta_Imagen) previewImage();
+            } else {
+                document.getElementById('modalTitle').innerHTML = `
+                    <iconify-icon icon="mdi:database-plus"></iconify-icon>
+                    Nuevo Registro
+                `;
+                document.getElementById('vehicleId').value = '';
+            }
+            modal.show();
+        }
+
+        // Preview Image
+        function previewImage() {
+            const ruta = document.getElementById('f_ruta_imagen').value;
+            const preview = document.getElementById('imagePreview');
+            
+            if (ruta) {
+                preview.innerHTML = `<img src="images/${ruta}" alt="Preview" onerror="this.parentElement.innerHTML='<div class=\'preview-placeholder-db\'><iconify-icon icon=\'mdi:image-broken\' width=\'48\' style=\'color: #ef4444;\'></iconify-icon><p class=\'mb-0 mt-2\' style=\'color: #ef4444;\'>Archivo no encontrado en /images/</p></div>'">`;
+            } else {
+                preview.innerHTML = `
+                    <div class="preview-placeholder-db">
+                        <iconify-icon icon="mdi:image-off" width="48" style="color: #cbd5e1;"></iconify-icon>
+                        <p class="mb-0 mt-2">Vista previa no disponible</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Save Vehicle
+        async function saveVehicle() {
+            const id = document.getElementById('vehicleId').value;
+            const vehiculo = document.getElementById('f_vehiculo').value.trim();
+            
+            if (!vehiculo) {
+                showToast('Validación', 'El campo Vehículo es obligatorio', 'warning');
+                return;
+            }
+
+            const payload = {
+                "Vehiculo": vehiculo,
+                "Color": document.getElementById('f_color').value,
+                "Motor_Traccion": document.getElementById('f_motor').value,
+                "Transmision": document.getElementById('f_transmision').value,
+                "Aire_Acondicionado": document.getElementById('f_ac').value,
+                "Estado": document.getElementById('f_estado').value,
+                "Caracteristicas": document.getElementById('f_caracteristicas').value,
+                "Seguro_Asistencia": document.getElementById('f_seguro').value,
+                "Otros": document.getElementById('f_otros').value,
+                "Ruta_Imagen": document.getElementById('f_ruta_imagen').value
+            };
+
+            const method = id ? 'PATCH' : 'POST';
+            const url = id ? `${dbUrl}vehiculos/${id}.json` : `${dbUrl}vehiculos.json`;
+
+            showLoading(true);
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!res.ok) throw new Error("Rechazado por Firebase");
+                
+                showToast('Éxito', id ? 'Registro actualizado en DB' : 'Nuevo registro creado en DB', 'success');
+                addActivity(id ? 'update' : 'insert', `${id ? 'Actualizado' : 'Creado'}: ${vehiculo}`);
+                modal.hide();
+                await loadVehicles();
+            } catch (error) {
+                showToast('Error DB', 'No se pudo guardar el registro', 'error');
+                addActivity('error', `Fallo al ${id ? 'actualizar' : 'crear'}: ${vehiculo}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Delete Vehicle
+        function deleteVehicle(key) {
+            const v = vehiculosData[key];
+            if (!confirm(`¿Eliminar registro "${v.Vehiculo || 'Sin nombre'}"?\n\nEsta acción no se puede deshacer.`)) return;
+            
+            showLoading(true);
+            fetch(`${dbUrl}vehiculos/${key}.json`, { method: 'DELETE' })
+                .then(() => {
+                    showToast('Eliminado', 'Registro eliminado de la base de datos', 'success');
+                    addActivity('delete', `Eliminado: ${v.Vehiculo || 'Sin nombre'}`);
+                    loadVehicles();
+                })
+                .catch(() => {
+                    showToast('Error', 'No se pudo eliminar el registro', 'error');
+                    addActivity('error', `Fallo al eliminar: ${v.Vehiculo || 'Sin nombre'}`);
+                })
+                .finally(() => showLoading(false));
+        }
+
+        // Import Excel
+        function importExcel() {
+            const fileUpload = document.getElementById('fileUpload');
+            if (!fileUpload.files.length) {
+                showToast('Atención', 'Selecciona un archivo Excel o CSV', 'warning');
+                return;
+            }
+
+            const file = fileUpload.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                showLoading(true);
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheet = workbook.SheetNames[0];
+                    const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+                    
+                    if (excelData.length === 0) {
+                        showToast('Error', 'El archivo está vacío', 'error');
+                        return;
+                    }
+
+                    let successCount = 0;
+                    let errorCount = 0;
+
+                    for (let row of excelData) {
+                        let rutaImagenVal = row["Ruta_Imagen"] || row["ruta de archivo"] || "";
+                        let estadoVal = row["Estado"] || "Operativo";
+
+                        const cleanRow = {
+                            "Vehiculo": row["Vehículo"] || "",
+                            "Color": row["Color"] || "",
+                            "Motor_Traccion": row["Motor/Tracción"] || "",
+                            "Transmision": row["Transmisión"] || "",
+                            "Aire_Acondicionado": row["Aire Acondicionado"] || "",
+                            "Estado": estadoVal,
+                            "Caracteristicas": row["Características Especiales"] || "",
+                            "Seguro_Asistencia": row["Seguro y Asistencia"] || "",
+                            "Otros": row["Otros"] || "",
+                            "Ruta_Imagen": rutaImagenVal
+                        };
+                        
+                        const res = await fetch(`${dbUrl}vehiculos.json`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(cleanRow)
+                        });
+
+                        if (res.ok) successCount++;
+                        else errorCount++;
+                    }
+                    
+                    document.getElementById('fileUpload').value = '';
+                    document.getElementById('fileLabel').innerHTML = `
+                        <iconify-icon icon="mdi:file-upload"></iconify-icon>
+                        <span>Excel/CSV</span>
+                    `;
+                    
+                    await loadVehicles();
+                    addActivity('insert', `Importación masiva: ${successCount} registros`);
+                    
+                    if (errorCount === 0) {
+                        showToast('Importación Completa', `${successCount} registros importados`, 'success');
+                    } else {
+                        showToast('Importación Parcial', `${successCount} OK, ${errorCount} errores`, 'warning');
+                    }
+
+                } catch (error) {
+                    showToast('Error', 'Error al procesar el archivo', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Toast
+        function showToast(title, message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-db ${type}`;
+            
+            const icons = {
+                success: 'mdi:check-circle',
+                error: 'mdi:alert-circle',
+                warning: 'mdi:alert',
+                info: 'mdi:information'
+            };
+            
+            const colors = {
+                success: '#10b981',
+                error: '#ef4444',
+                warning: '#f59e0b',
+                info: '#3b82f6'
+            };
+            
+            toast.innerHTML = `
+                <iconify-icon icon="${icons[type]}" class="toast-icon-db" style="color: ${colors[type]}"></iconify-icon>
+                <div class="toast-content-db">
+                    <div class="toast-title-db">${title}</div>
+                    <div class="toast-msg-db">${message}</div>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideInDb 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // Loading
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
