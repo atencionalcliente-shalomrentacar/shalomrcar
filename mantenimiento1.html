@@ -901,6 +901,7 @@
 </head>
 <body>
 
+    <!-- Navbar -->
     <nav class="navbar-system">
         <div class="navbar-inner">
             <div class="brand-section">
@@ -926,6 +927,7 @@
     </nav>
 
     <div class="main-layout">
+        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-section">
                 <div class="sidebar-title">
@@ -991,7 +993,9 @@
             </div>
         </aside>
 
+        <!-- Content -->
         <main class="content-area">
+            <!-- Toolbar -->
             <div class="toolbar-db">
                 <div class="toolbar-left">
                     <h4 class="table-title">
@@ -1026,6 +1030,7 @@
                 </div>
             </div>
 
+            <!-- Table -->
             <div class="table-wrapper">
                 <div class="table-responsive">
                     <table class="db-table">
@@ -1043,7 +1048,8 @@
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            </tbody>
+                            <!-- Dynamic -->
+                        </tbody>
                     </table>
                 </div>
                 <div class="pagination-db" id="pagination" style="display: none;"></div>
@@ -1051,6 +1057,7 @@
         </main>
     </div>
 
+    <!-- Modal -->
     <div class="modal fade" id="vehicleModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content modal-content-db">
@@ -1140,9 +1147,9 @@
                                 Gestión de Imagen
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label-db">Ruta de Archivo (carpeta /images/nuevos/)</label>
+                                <label class="form-label-db">Ruta de Archivo (carpeta /images/)</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light" style="font-family: var(--mono); font-size: 0.8rem;">images/nuevos/</span>
+                                    <span class="input-group-text bg-light" style="font-family: var(--mono); font-size: 0.8rem;">images/</span>
                                     <input type="text" class="form-control form-control-db" id="f_ruta_imagen" placeholder="nombre-archivo.jpg" oninput="previewImage()">
                                 </div>
                                 <div class="preview-box-db" id="imagePreview">
@@ -1169,8 +1176,10 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
     <div class="toast-container-db" id="toastContainer"></div>
 
+    <!-- Loading -->
     <div class="loading-overlay-db" id="loadingOverlay" style="display: none;">
         <div class="spinner-db"></div>
         <div class="loading-text-db">Sincronizando con Firebase...</div>
@@ -1287,7 +1296,7 @@
 
             paginatedKeys.forEach(key => {
                 const v = filteredData[key];
-                const imagePath = v.Ruta_Imagen ? `images/nuevos/${v.Ruta_Imagen}` : '';
+                const imagePath = v.Ruta_Imagen ? `images/${v.Ruta_Imagen}` : '';
                 const estado = v.Estado || 'Operativo';
                 
                 const estadoClass = estado === 'Operativo' ? 'operativo' : 
@@ -1300,7 +1309,7 @@
                 tr.innerHTML = `
                     <td class="cell-img">
                         ${imagePath ? 
-                            `<img src="${imagePath}" class="vehicle-thumb" alt="${v.Vehiculo}" onerror="this.parentElement.innerHTML='<div class=\\'d-flex align-items-center justify-content-center bg-light rounded\\' style=\\'width:80px;height:56px\\'><iconify-icon icon=\\'mdi:image-off\\' color=\\'#cbd5e1\\'></iconify-icon></div>'">` :
+                            `<img src="${imagePath}" class="vehicle-thumb" alt="${v.Vehiculo}" onerror="this.parentElement.innerHTML='<div class=\'d-flex align-items-center justify-content-center bg-light rounded\' style=\'width:80px;height:56px\'><iconify-icon icon=\'mdi:image-off\' color=\'#cbd5e1\'></iconify-icon></div>'">` :
                             `<div class="d-flex align-items-center justify-content-center bg-light rounded" style="width:80px;height:56px">
                                 <iconify-icon icon="mdi:image-off" color="#cbd5e1"></iconify-icon>
                             </div>`
@@ -1455,7 +1464,7 @@
             const preview = document.getElementById('imagePreview');
             
             if (ruta) {
-                preview.innerHTML = `<img src="images/nuevos/${ruta}" alt="Preview" onerror="this.parentElement.innerHTML='<div class=\\'preview-placeholder-db\\'><iconify-icon icon=\\'mdi:image-broken\\' width=\\'48\\' style=\\'color: #ef4444;\\'></iconify-icon><p class=\\'mb-0 mt-2\\' style=\\'color: #ef4444;\\'>Archivo no encontrado en /images/nuevos/</p></div>'">`;
+                preview.innerHTML = `<img src="images/${ruta}" alt="Preview" onerror="this.parentElement.innerHTML='<div class=\'preview-placeholder-db\'><iconify-icon icon=\'mdi:image-broken\' width=\'48\' style=\'color: #ef4444;\'></iconify-icon><p class=\'mb-0 mt-2\' style=\'color: #ef4444;\'>Archivo no encontrado en /images/</p></div>'">`;
             } else {
                 preview.innerHTML = `
                     <div class="preview-placeholder-db">
