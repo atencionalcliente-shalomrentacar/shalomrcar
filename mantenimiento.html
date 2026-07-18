@@ -464,6 +464,43 @@
             border-color: var(--accent);
             color: var(--accent);
         }
+        .dropdown-menu-db {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            padding: 0.5rem;
+            min-width: 270px;
+        }
+        .dropdown-menu-db .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .dropdown-menu-db .dropdown-item:hover {
+            background: #fef2f2;
+            color: var(--accent);
+        }
+        .dropdown-menu-db .dropdown-item.danger-item:hover {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+        .dropdown-menu-db .dropdown-item iconify-icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .dropdown-menu-db .dropdown-header-db {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            padding: 0.4rem 0.75rem 0.2rem;
+        }
         .table-wrapper {
             background: white;
             border: 1px solid var(--border);
@@ -892,6 +929,9 @@
                     <div class="connection-status">● Conectado</div>
                 </div>
             </div>
+            <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:0.4rem;">
+                Última sincronización: <span id="metricLastSync" style="font-family:var(--mono);font-weight:600;">--:--</span>
+            </div>
         </div>
 
         <!-- ===== NUEVA SECCIÓN CONFIGURACIÓN (SOLO ADMIN) ===== -->
@@ -931,6 +971,34 @@
                     <iconify-icon icon="mdi:swap-horizontal"></iconify-icon>
                     <span id="btnToggleLabel">Configuración</span>
                 </button>
+
+                <!-- Gestión de Vehículos por Excel: 3 funciones (agregar por excel, agregar manual, limpiar y recargar) -->
+                <div class="dropdown" id="excelToolsWrapper" style="display:none;">
+                    <button class="btn-db btn-db-outline dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <iconify-icon icon="mdi:file-excel"></iconify-icon> Datos por Excel
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-db" aria-labelledby="excelToolsWrapper">
+                        <li class="dropdown-header-db">Cargar registros</li>
+                        <li><a class="dropdown-item" href="#" onclick="triggerVehiculoImport('append'); return false;">
+                            <iconify-icon icon="mdi:database-import" style="color:var(--info);"></iconify-icon>
+                            <span>Agregar registros desde Excel</span>
+                        </a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li class="dropdown-header-db">Reemplazo total</li>
+                        <li><a class="dropdown-item danger-item" href="#" onclick="triggerVehiculoImport('replace'); return false;">
+                            <iconify-icon icon="mdi:database-refresh" style="color:var(--danger);"></iconify-icon>
+                            <span>Limpiar y cargar nueva data</span>
+                        </a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item" href="#" onclick="downloadVehiculoTemplate(); return false;">
+                            <iconify-icon icon="mdi:file-download-outline" style="color:var(--success);"></iconify-icon>
+                            <span>Descargar plantilla de Excel</span>
+                        </a></li>
+                    </ul>
+                </div>
+                <input type="file" id="vehiculoFileUpload" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleVehiculoExcelFile()">
+
+                <!-- Import genérico (usado para el nodo Usuarios) -->
                 <div class="file-input-db" id="fileInputWrapper">
                     <input type="file" id="fileUpload" accept=".xlsx, .xls, .csv">
                     <label for="fileUpload" class="file-label-db" id="fileLabel">
@@ -940,6 +1008,10 @@
                 </div>
                 <button class="btn-db btn-db-outline" onclick="importData()" id="btnImport">
                     <iconify-icon icon="mdi:database-import"></iconify-icon> Importar
+                </button>
+
+                <button class="btn-db btn-db-outline" onclick="exportToExcel()" id="btnExport">
+                    <iconify-icon icon="mdi:file-excel"></iconify-icon> Exportar
                 </button>
                 <button class="btn-db btn-db-primary" onclick="openModal()" id="btnNew">
                     <iconify-icon icon="mdi:plus-circle"></iconify-icon>
@@ -975,6 +1047,23 @@
                         <div class="form-section-title"><iconify-icon icon="mdi:car-info"></iconify-icon> Datos del Vehículo</div>
                         <div class="row g-3">
                             <div class="col-md-6"><label class="form-label-db">Vehículo *</label><input type="text" class="form-control form-control-db" id="f_vehiculo" required placeholder="Kia Soul 2023"></div>
+                            <div class="col-md-6">
+                                <label class="form-label-db">Tipo</label>
+                                <input type="text" class="form-control form-control-db" id="f_tipo" list="tipoOptions" placeholder="SUV, Sedán, Pick-up...">
+                                <datalist id="tipoOptions">
+                                    <option value="Sedán">
+                                    <option value="SUV">
+                                    <option value="SUV / Crossover">
+                                    <option value="Pick-up">
+                                    <option value="Hatchback">
+                                    <option value="Van / Microbús">
+                                    <option value="Furgón/Van">
+                                    <option value="Minivan">
+                                    <option value="Coupé">
+                                    <option value="Deportivo">
+                                    <option value="Otro">
+                                </datalist>
+                            </div>
                             <div class="col-md-6"><label class="form-label-db">Color</label><input type="text" class="form-control form-control-db" id="f_color" placeholder="Rojo Metalizado"></div>
                             <div class="col-md-6"><label class="form-label-db">Motor / Tracción</label><input type="text" class="form-control form-control-db" id="f_motor" placeholder="2.0L 4x2"></div>
                             <div class="col-md-6"><label class="form-label-db">Transmisión</label><select class="form-select form-select-db" id="f_transmision"><option value="">-- Seleccionar --</option><option value="Automática">Automática</option><option value="Manual">Manual</option><option value="CVT">CVT</option><option value="DCT">DCT</option></select></div>
@@ -1193,15 +1282,25 @@
             const user = await res.json();
             if (user) {
                 currentUser = { id: userId, ...user };
+
+                // ==== ANÁLISIS DE ROL EN SEGUNDO PLANO ====
+                // Se evalúa el rol del usuario autenticado; solo "Administrador"
+                // obtiene acceso al módulo CRUD del nodo Usuarios y a la gestión
+                // masiva de datos (Excel) del nodo Vehículos.
                 isAdmin = (user.rol === 'Administrador');
+
                 showApp();
                 await loadVehiculos();
                 await loadUsuarios();
                 setView('vehiculos');
-                // Mostrar configuración solo si es admin
+                // Mostrar configuración y módulo de usuarios solo si es admin
                 document.getElementById('configSection').style.display = isAdmin ? 'block' : 'none';
                 document.getElementById('btnToggleView').style.display = isAdmin ? 'inline-flex' : 'none';
+
                 addActivity('sync', `Sesión iniciada como ${user.nombre}`);
+                addActivity(isAdmin ? 'insert' : 'sync', isAdmin
+                    ? `Rol detectado: Administrador — acceso habilitado a CRUD de Usuarios y carga masiva de Vehículos`
+                    : `Rol detectado: ${user.rol || 'Usuario'} — modo de acceso restringido`);
             } else {
                 logout();
                 showToast('Sesión expirada', 'El usuario ha sido eliminado', 'error');
@@ -1219,7 +1318,25 @@
         try {
             const res = await fetch(`${dbUrl}vehiculos.json`);
             vehiculosData = (await res.json()) || {};
+            updateTipoDatalist();
         } catch (e) { showToast('Error DB', 'No se pudieron cargar los vehículos', 'error'); }
+    }
+
+    // Mantiene el datalist de "Tipo" sincronizado con los valores reales
+    // presentes en la base de datos (incluyendo los que llegan por Excel),
+    // así el campo del formulario siempre refleja los datos reales.
+    function updateTipoDatalist() {
+        const datalist = document.getElementById('tipoOptions');
+        if (!datalist) return;
+        const existentes = new Set(Array.from(datalist.options).map(o => o.value));
+        Object.values(vehiculosData).forEach(v => {
+            if (v.Tipo && !existentes.has(v.Tipo)) {
+                const opt = document.createElement('option');
+                opt.value = v.Tipo;
+                datalist.appendChild(opt);
+                existentes.add(v.Tipo);
+            }
+        });
     }
 
     async function loadUsuarios() {
@@ -1260,8 +1377,9 @@
             `;
             recordCount.textContent = `${total} registros`;
             searchInput.placeholder = 'Buscar vehículo, color, motor...';
-            document.getElementById('fileInputWrapper').style.display = isAdmin ? 'block' : 'none';
-            document.getElementById('btnImport').style.display = isAdmin ? 'inline-flex' : 'none';
+            document.getElementById('excelToolsWrapper').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('fileInputWrapper').style.display = 'none';
+            document.getElementById('btnImport').style.display = 'none';
             document.getElementById('btnNew').style.display = isAdmin ? 'inline-flex' : 'none';
             filteredData = { ...vehiculosData };
             renderTableVehiculos();
@@ -1269,6 +1387,7 @@
                 const q = e.target.value.toLowerCase();
                 filteredData = q ? Object.fromEntries(Object.entries(vehiculosData).filter(([k,v]) =>
                     (v.Vehiculo && v.Vehiculo.toLowerCase().includes(q)) ||
+                    (v.Tipo && v.Tipo.toLowerCase().includes(q)) ||
                     (v.Color && v.Color.toLowerCase().includes(q)) ||
                     (v.Motor_Traccion && v.Motor_Traccion.toLowerCase().includes(q)) ||
                     (v.Estado && v.Estado.toLowerCase().includes(q))
@@ -1292,6 +1411,7 @@
             `;
             recordCount.textContent = `${total} registros`;
             searchInput.placeholder = 'Buscar nombre, email, rol...';
+            document.getElementById('excelToolsWrapper').style.display = 'none';
             document.getElementById('fileInputWrapper').style.display = isAdmin ? 'block' : 'none';
             document.getElementById('btnImport').style.display = isAdmin ? 'inline-flex' : 'none';
             document.getElementById('btnNew').style.display = isAdmin ? 'inline-flex' : 'none';
@@ -1321,12 +1441,12 @@
     function renderTableVehiculos() {
         const tbody = document.getElementById('tableBody');
         const thead = document.getElementById('tableHead');
-        thead.innerHTML = `<tr><th>Imagen</th><th>Vehículo</th><th>Color</th><th>Motor/Tracción</th><th>Transmisión</th><th>A/C</th><th>Ruta Imagen</th><th>Estado</th><th class="text-center">Acciones</th></tr>`;
+        thead.innerHTML = `<tr><th>Imagen</th><th>Vehículo</th><th>Tipo</th><th>Color</th><th>Motor/Tracción</th><th>Transmisión</th><th>A/C</th><th>Ruta Imagen</th><th>Estado</th><th class="text-center">Acciones</th></tr>`;
         tbody.innerHTML = '';
 
         const keys = Object.keys(filteredData);
         if (keys.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" class="empty-db"><iconify-icon icon="mdi:database-off"></iconify-icon><h5 class="mt-3">No hay vehículos registrados</h5><p class="text-muted">Crea un nuevo registro o importa desde Excel/CSV</p></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="10" class="empty-db"><iconify-icon icon="mdi:database-off"></iconify-icon><h5 class="mt-3">No hay vehículos registrados</h5><p class="text-muted">Crea un nuevo registro o importa desde Excel/CSV</p></td></tr>`;
             document.getElementById('pagination').style.display = 'none';
             return;
         }
@@ -1350,6 +1470,7 @@
                     }
                 </td>
                 <td class="cell-vehicle"><div class="vehicle-name-db">${v.Vehiculo || '-'}</div>${v.Caracteristicas ? `<div class="vehicle-specs">${v.Caracteristicas}</div>` : ''}</td>
+                <td>${v.Tipo ? `<span class="badge-db operativo">${v.Tipo}</span>` : '<span class="text-muted">-</span>'}</td>
                 <td class="cell-mono">${v.Color || '-'}</td>
                 <td class="cell-mono">${v.Motor_Traccion || '-'}</td>
                 <td class="cell-mono">${v.Transmision || '-'}</td>
@@ -1427,6 +1548,13 @@
     // ============================================================
     //  CRUD VEHÍCULOS
     // ============================================================
+    // Función #2 de gestión: "Agregar registro por medio del botón Nuevo
+    // Registro". Enruta al modal correcto según la vista activa.
+    function openModal(key = null) {
+        if (currentView === 'vehiculos') openModalVehicle(key);
+        else openModalUser(key);
+    }
+
     function openModalVehicle(key = null) {
         if (!isAdmin) { showToast('Acceso denegado', 'Solo administradores pueden editar', 'warning'); return; }
         document.getElementById('vehicleForm').reset();
@@ -1436,6 +1564,7 @@
             document.getElementById('editId').value = key;
             const v = vehiculosData[key];
             document.getElementById('f_vehiculo').value = v.Vehiculo || '';
+            document.getElementById('f_tipo').value = v.Tipo || '';
             document.getElementById('f_color').value = v.Color || '';
             document.getElementById('f_motor').value = v.Motor_Traccion || '';
             document.getElementById('f_transmision').value = v.Transmision || '';
@@ -1471,6 +1600,7 @@
 
         const payload = {
             Vehiculo: vehiculo,
+            Tipo: document.getElementById('f_tipo').value,
             Color: document.getElementById('f_color').value,
             Motor_Traccion: document.getElementById('f_motor').value,
             Transmision: document.getElementById('f_transmision').value,
@@ -1611,6 +1741,200 @@
     }
 
     // ============================================================
+    //  GESTIÓN DE VEHÍCULOS POR EXCEL (3 funciones)
+    //  1) Agregar registros desde el formato de Excel (append)
+    //  2) Agregar registro manual -> ver función openModal()
+    //  3) Limpiar y cargar nueva data desde Excel (reemplazo total)
+    // ============================================================
+    let pendingImportMode = 'append';
+
+    function mapExcelRowToVehiculo(row) {
+        const get = (...keys) => {
+            for (const k of keys) {
+                if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') return String(row[k]).trim();
+            }
+            return '';
+        };
+        return {
+            Vehiculo: get('Vehículo', 'Vehiculo', 'vehiculo'),
+            Tipo: get('Tipo', 'tipo'),
+            Color: get('Color', 'color'),
+            Motor_Traccion: get('Motor/Tracción', 'Motor/Traccion', 'motor', 'Motor_Traccion'),
+            Transmision: get('Transmisión', 'Transmision', 'transmision'),
+            Aire_Acondicionado: get('Aire Acondicionado', 'ac', 'Aire_Acondicionado'),
+            Estado: get('Estado', 'estado') || 'Operativo',
+            Caracteristicas: get('Características Especiales', 'Caracteristicas Especiales', 'caracteristicas', 'Caracteristicas'),
+            Seguro_Asistencia: get('Seguro y Asistencia', 'seguro', 'Seguro_Asistencia'),
+            Otros: get('Otros', 'otros'),
+            Ruta_Imagen: get('Ruta_Imagen', 'ruta_imagen', 'Ruta de Imagen')
+        };
+    }
+
+    function triggerVehiculoImport(mode) {
+        if (!isAdmin) { showToast('Acceso denegado', 'Solo administradores pueden cargar datos', 'warning'); return; }
+        pendingImportMode = mode;
+        const input = document.getElementById('vehiculoFileUpload');
+        input.value = '';
+        input.click();
+    }
+
+    function handleVehiculoExcelFile() {
+        const input = document.getElementById('vehiculoFileUpload');
+        if (!input.files.length) return;
+        const file = input.files[0];
+
+        if (pendingImportMode === 'replace') {
+            const total = Object.keys(vehiculosData).length;
+            const ok = confirm(
+                `⚠️ Esto ELIMINARÁ los ${total} registros actuales del nodo Vehículos ` +
+                `y los reemplazará por el contenido del archivo "${file.name}".\n\n` +
+                `Esta acción no se puede deshacer. ¿Deseas continuar?`
+            );
+            if (!ok) { input.value = ''; return; }
+        }
+        processVehiculoExcel(file, pendingImportMode);
+    }
+
+    async function processVehiculoExcel(file, mode) {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            showLoading(true);
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.SheetNames[0];
+                const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+                if (excelData.length === 0) {
+                    showToast('Error', 'El archivo está vacío', 'error');
+                    showLoading(false);
+                    return;
+                }
+
+                // Función 3: limpiar el nodo vehículos antes de cargar la nueva data
+                if (mode === 'replace') {
+                    await fetch(`${dbUrl}vehiculos.json`, { method: 'DELETE' });
+                    addActivity('delete', 'Nodo Vehículos limpiado antes de la carga masiva');
+                }
+
+                let successCount = 0, errorCount = 0;
+                for (const row of excelData) {
+                    const cleanRow = mapExcelRowToVehiculo(row);
+                    if (!cleanRow.Vehiculo) { errorCount++; continue; }
+                    const res = await fetch(`${dbUrl}vehiculos.json`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(cleanRow)
+                    });
+                    if (res.ok) successCount++; else errorCount++;
+                }
+
+                await loadVehiculos();
+                setView('vehiculos');
+
+                const accion = mode === 'replace' ? 'Reemplazo total desde Excel' : 'Importación (agregar) desde Excel';
+                addActivity('insert', `${accion}: ${successCount} vehículos cargados`);
+
+                if (errorCount === 0) {
+                    showToast(
+                        mode === 'replace' ? 'Datos Reemplazados' : 'Importación Completa',
+                        `${successCount} vehículos cargados correctamente`,
+                        'success'
+                    );
+                } else {
+                    showToast('Importación Parcial', `${successCount} OK, ${errorCount} con errores (sin campo "Vehículo")`, 'warning');
+                }
+            } catch (err) {
+                showToast('Error', 'No se pudo procesar el archivo Excel', 'error');
+                addActivity('error', 'Fallo al procesar carga de Excel de vehículos');
+            } finally {
+                showLoading(false);
+                document.getElementById('vehiculoFileUpload').value = '';
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function downloadVehiculoTemplate() {
+        const template = [{
+            'Vehículo': 'Kia Soul 2023',
+            'Tipo': 'SUV / Crossover',
+            'Color': 'Rojo Metalizado',
+            'Motor/Tracción': '2.0L 4x2',
+            'Transmisión': 'Automática',
+            'Aire Acondicionado': 'Sí',
+            'Estado': 'Operativo',
+            'Características Especiales': 'GPS, Bluetooth, Cámara de retroceso',
+            'Seguro y Asistencia': 'Seguro y asistencia vial 24/7',
+            'Otros': 'Precios incluyen papelería, contrato e impuestos',
+            'Ruta_Imagen': 'nombre-archivo.jpg'
+        }];
+        try {
+            const ws = XLSX.utils.json_to_sheet(template);
+            ws['!cols'] = Object.keys(template[0]).map(() => ({ wch: 26 }));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Vehiculos');
+            XLSX.writeFile(wb, 'plantilla_vehiculos_shalom.xlsx');
+            showToast('Plantilla descargada', 'Usa este formato de columnas para tus cargas de Excel', 'success');
+        } catch (err) {
+            showToast('Error', 'No se pudo generar la plantilla', 'error');
+        }
+    }
+
+    // ============================================================
+    //  EXPORTAR A EXCEL
+    // ============================================================
+    function exportToExcel() {
+        let dataToExport = [];
+        let filename = '';
+        let sheetName = '';
+        const fecha = new Date().toISOString().slice(0, 10);
+
+        if (currentView === 'vehiculos') {
+            dataToExport = Object.values(vehiculosData).map(v => ({
+                'Vehículo': v.Vehiculo || '',
+                'Tipo': v.Tipo || '',
+                'Color': v.Color || '',
+                'Motor/Tracción': v.Motor_Traccion || '',
+                'Transmisión': v.Transmision || '',
+                'Aire Acondicionado': v.Aire_Acondicionado || '',
+                'Estado': v.Estado || '',
+                'Características Especiales': v.Caracteristicas || '',
+                'Seguro y Asistencia': v.Seguro_Asistencia || '',
+                'Otros': v.Otros || '',
+                'Ruta_Imagen': v.Ruta_Imagen || ''
+            }));
+            filename = `vehiculos_shalom_${fecha}.xlsx`;
+            sheetName = 'Vehiculos';
+        } else {
+            if (!isAdmin) { showToast('Acceso denegado', 'Solo administradores pueden exportar usuarios', 'warning'); return; }
+            dataToExport = Object.values(usuariosData).map(u => ({
+                'Nombre': u.nombre || '',
+                'Email': u.email || '',
+                'Rol': u.rol || ''
+            }));
+            filename = `usuarios_shalom_${fecha}.xlsx`;
+            sheetName = 'Usuarios';
+        }
+
+        if (dataToExport.length === 0) {
+            showToast('Atención', 'No hay datos para exportar', 'warning');
+            return;
+        }
+
+        try {
+            const ws = XLSX.utils.json_to_sheet(dataToExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            XLSX.writeFile(wb, filename);
+            showToast('Exportado', `${dataToExport.length} registros exportados a ${filename}`, 'success');
+            addActivity('insert', `Exportación a Excel: ${dataToExport.length} registros de ${sheetName.toLowerCase()}`);
+        } catch (err) {
+            showToast('Error', 'No se pudo generar el archivo Excel', 'error');
+        }
+    }
+
+    // ============================================================
     //  IMPORTAR DATOS
     // ============================================================
     function importData() {
@@ -1645,6 +1969,7 @@
                     if (targetNode === 'vehiculos') {
                         cleanRow = {
                             Vehiculo: row["Vehículo"] || row["vehiculo"] || "",
+                            Tipo: row["Tipo"] || row["tipo"] || "",
                             Color: row["Color"] || row["color"] || "",
                             Motor_Traccion: row["Motor/Tracción"] || row["motor"] || "",
                             Transmision: row["Transmisión"] || row["transmision"] || "",
