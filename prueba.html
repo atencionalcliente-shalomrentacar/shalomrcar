@@ -31,7 +31,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Raleway:wght@400;700&display=swap"
         rel="stylesheet">
 
-        <link rel="icon" href="images/logo-car.png" type="image/x-icon">
+        <link rel="icon" href="images/nuevos/logoactualizado.jpeg" type="image/jpeg">
 
     <!-- script ================================================== -->
     <script src="js/modernizr.js"></script>
@@ -132,6 +132,243 @@
             color: white;
             font-weight: 700;
         }
+
+        /* ===================== BUSCADOR EN NAVBAR ===================== */
+        .nav-search-wrapper {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            margin-right: 0.75rem;
+        }
+        .nav-search-toggle {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border: 1px solid #dbe6ee;
+            background: #f3f8fb;
+            color: #024572;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .nav-search-toggle:hover { background: #024572; color: #fff; }
+        .nav-search-form {
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            max-width: 0;
+            opacity: 0;
+            transition: max-width 0.3s ease, opacity 0.25s ease, margin 0.3s ease;
+        }
+        .nav-search-form.active {
+            max-width: 240px;
+            opacity: 1;
+            margin-left: 0.5rem;
+        }
+        .nav-search-input {
+            width: 100%;
+            border: 1px solid #dbe6ee;
+            background: #f3f8fb;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            color: #024572;
+            outline: none;
+        }
+        .nav-search-input:focus { border-color: #024572; background: #fff; }
+        @media (max-width: 575.98px) {
+            .nav-search-form.active { max-width: 150px; }
+        }
+
+        /* ===================== FILTROS POR TIPO ===================== */
+        .rental-filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem;
+            margin: 0 0 1.75rem;
+        }
+        .rental-filter-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: 30px;
+            border: 1.5px solid #dbe6ee;
+            background: #ffffff;
+            color: #024572;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .rental-filter-btn:hover {
+            border-color: #024572;
+            background: #f3f8fb;
+            transform: translateY(-1px);
+        }
+        .rental-filter-btn.active {
+            background: linear-gradient(180deg, #024572 0%, #012c4a 100%);
+            border-color: #024572;
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(2,69,114,0.25);
+        }
+        .rental-filter-btn .filter-count {
+            background: rgba(2,69,114,0.1);
+            color: #024572;
+            border-radius: 30px;
+            padding: 0.05rem 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .rental-filter-btn.active .filter-count {
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+        }
+
+        /* ===================== BÚSQUEDA + CONTADOR SOBRE LA TABLA ===================== */
+        .rental-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .rental-count-badge {
+            font-size: 0.82rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .rental-count-badge strong { color: #024572; }
+        .rental-search-active-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #eef5f9;
+            color: #024572;
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem 0.3rem 1rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .rental-search-active-tag button {
+            border: none;
+            background: transparent;
+            color: #024572;
+            font-size: 1rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* ===================== TABLA REDISEÑADA ===================== */
+        .rental-table-wrapper {
+            box-shadow: 0 15px 35px rgba(2, 69, 114, 0.1);
+        }
+        .rental-table thead th {
+            padding: 1.1rem 1rem;
+            border-bottom: 2px solid rgba(255,255,255,0.15);
+        }
+        .rental-table tbody tr {
+            transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+        .rental-table tbody tr:hover {
+            background: #f3f8fb;
+            box-shadow: inset 3px 0 0 #024572;
+        }
+        .rental-thumb {
+            width: 96px;
+            height: 68px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 3px 10px rgba(2,69,114,0.15);
+            transition: transform 0.2s ease;
+        }
+        .rental-table tbody tr:hover .rental-thumb { transform: scale(1.06); }
+        .rental-vehiculo-cell { display: flex; flex-direction: column; gap: 0.3rem; align-items: flex-start; }
+        .rental-tipo-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #024572;
+            background: #eef5f9;
+            border: 1px solid #dbe6ee;
+            border-radius: 20px;
+            padding: 0.1rem 0.6rem;
+        }
+        .rental-table-empty {
+            padding: 3.5rem 1rem;
+        }
+        .rental-table-empty iconify-icon { font-size: 2.5rem; color: #cbd5e1; display: block; margin-bottom: 0.75rem; }
+        .rental-reset-btn {
+            border: 1.5px solid #024572;
+            color: #024572;
+            background: #fff;
+            border-radius: 20px;
+            padding: 0.4rem 1.1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.75rem;
+        }
+        .rental-reset-btn:hover { background: #024572; color: #fff; }
+
+        /* ===================== VISTA DE TARJETAS EN MÓVIL ===================== */
+        @media (max-width: 767.98px) {
+            .rental-table thead { display: none; }
+            .rental-table, .rental-table tbody { display: block; width: 100%; }
+            .rental-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 6px 18px rgba(2,69,114,0.1);
+            }
+            .rental-table tbody tr:hover { box-shadow: 0 6px 18px rgba(2,69,114,0.1); }
+            .rental-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.65rem 1rem;
+                border-bottom: 1px solid #f1f5f9;
+                text-align: right;
+            }
+            .rental-table td:last-child { border-bottom: none; }
+            .rental-table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #024572;
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                text-align: left;
+                flex-shrink: 0;
+            }
+            .rental-cell-img {
+                width: 100%;
+                padding: 0 !important;
+            }
+            .rental-cell-img::before { display: none; }
+            .rental-cell-img .rental-thumb,
+            .rental-cell-img .rental-placeholder-thumb {
+                width: 100%;
+                height: 170px;
+                border-radius: 0;
+                border: none;
+            }
+            .rental-vehiculo-cell { align-items: flex-end; }
+            td[data-label="Acción"] { justify-content: center; }
+            td[data-label="Acción"]::before { display: none; }
+            td[data-label="Acción"] .btn { width: 100%; }
+        }
     </style>
 
 </head>
@@ -140,7 +377,18 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light position-fixed w-100 py-2">
         <div class="container">
-            <a class="navbar-brand" href="index.html"><img src="images/logo-bg.png" alt="logo" width="200"></a>
+            <a class="navbar-brand" href="index.html"><img src="images/nuevos/logoactualizado.jpeg" alt="Shalom Rent a Car" width="200" style="height:auto;"></a>
+
+            <!-- Buscador general de vehículos (junto al menú) -->
+            <div class="nav-search-wrapper">
+                <button type="button" class="nav-search-toggle" id="navSearchToggle" aria-label="Buscar vehículo">
+                    <iconify-icon icon="mdi:magnify"></iconify-icon>
+                </button>
+                <form class="nav-search-form" id="navSearchForm" role="search">
+                    <input type="text" id="navSearchInput" class="nav-search-input" placeholder="Buscar vehículo..." autocomplete="off">
+                </form>
+            </div>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -304,6 +552,14 @@
     <section id="rental" class="position-relative">
         <div class="container">
             <h2 class="text-center my-5">vehiculos para <span style="color:#024572;"> rentar </span> </h2>
+
+            <!-- Filtros dinámicos por Tipo: se generan según los tipos detectados en la base de datos -->
+            <div class="rental-filters" id="rentalFilters"></div>
+
+            <div class="rental-toolbar">
+                <span class="rental-count-badge" id="rentalCountBadge"></span>
+                <span id="rentalSearchTag"></span>
+            </div>
 
             <div class="table-responsive rental-table-wrapper">
                 <table class="rental-table" id="rentalTable">
@@ -1160,7 +1416,7 @@
             <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 my-5 py-5 ">
 
                 <div class=" col-md-4 mt-5 mt-md-0 ">
-                    <img src="images/logo-bg.png" alt="image" width="150">
+                    <img src="images/nuevos/logoactualizado.jpeg" alt="Shalom Rent a Car" width="150" style="height:auto;">
                     <p class="py-3">Síguenos en nuestras redes sociales para recibir actualizaciones y promociones cada vez que se suban</p>
                     <div class="d-flex align-items-center ">
 
@@ -1269,7 +1525,17 @@
         <script>
         document.addEventListener('DOMContentLoaded', function () {
             const tbody = document.getElementById('rentalTableBody');
+            const filtersEl = document.getElementById('rentalFilters');
+            const countBadgeEl = document.getElementById('rentalCountBadge');
+            const searchTagEl = document.getElementById('rentalSearchTag');
+            const navSearchToggle = document.getElementById('navSearchToggle');
+            const navSearchForm = document.getElementById('navSearchForm');
+            const navSearchInput = document.getElementById('navSearchInput');
             const WHATSAPP_NUMBER = '78699847';
+
+            let allVehiculos = [];      // todos los vehículos cargados desde Firebase
+            let activeTipo = 'Todos';   // filtro de tipo activo
+            let searchTerm = '';        // término de búsqueda activo
 
             function esc(str) {
                 if (!str) return '';
@@ -1278,13 +1544,89 @@
                 return div.innerHTML;
             }
 
+            function normalize(str) {
+                return String(str || '')
+                    .toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // quita acentos
+            }
+
             function waLink(vehiculo) {
                 const msg = `Hola, estoy interesado en rentar el ${vehiculo}.`;
                 return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
             }
 
+            // Icono representativo según el tipo de vehículo (con fallback por palabra clave,
+            // para que tipos nuevos que no estén en el mapa igual muestren algo razonable).
+            function getTipoIcon(tipo) {
+                const t = normalize(tipo);
+                if (t.includes('pick')) return 'mdi:car-pickup';
+                if (t.includes('van') || t.includes('microbus') || t.includes('furgon')) return 'mdi:van-passenger';
+                if (t.includes('bus')) return 'mdi:bus';
+                if (t.includes('suv') || t.includes('crossover')) return 'mdi:car-estate';
+                if (t.includes('hatch')) return 'mdi:car-hatchback';
+                if (t.includes('sedan')) return 'mdi:car-side';
+                if (t.includes('coupe') || t.includes('deportivo')) return 'mdi:car-sports';
+                if (t.includes('minivan')) return 'mdi:car-multiple';
+                return 'mdi:car';
+            }
+
+            // ============================================================
+            //  FILTROS DINÁMICOS POR TIPO
+            //  Los botones se generan a partir de los valores de "Tipo" que
+            //  realmente existen en la base de datos. Si en el panel de
+            //  administración aparece un tipo nuevo (ej. "Bus"), el botón
+            //  correspondiente se crea automáticamente aquí sin tocar código.
+            // ============================================================
+            function renderFiltros() {
+                const conteo = {};
+                allVehiculos.forEach(function (v) {
+                    const tipo = (v.Tipo && String(v.Tipo).trim()) || 'Otros';
+                    conteo[tipo] = (conteo[tipo] || 0) + 1;
+                });
+                const tipos = Object.keys(conteo).sort(function (a, b) { return a.localeCompare(b, 'es'); });
+
+                let html = '' +
+                    '<button type="button" class="rental-filter-btn ' + (activeTipo === 'Todos' ? 'active' : '') + '" data-tipo="Todos">' +
+                        '<iconify-icon icon="mdi:view-grid-outline"></iconify-icon> Todos ' +
+                        '<span class="filter-count">' + allVehiculos.length + '</span>' +
+                    '</button>';
+
+                tipos.forEach(function (tipo) {
+                    html += '' +
+                        '<button type="button" class="rental-filter-btn ' + (activeTipo === tipo ? 'active' : '') + '" data-tipo="' + esc(tipo) + '">' +
+                            '<iconify-icon icon="' + getTipoIcon(tipo) + '"></iconify-icon> ' + esc(tipo) + ' ' +
+                            '<span class="filter-count">' + conteo[tipo] + '</span>' +
+                        '</button>';
+                });
+
+                filtersEl.innerHTML = html;
+
+                filtersEl.querySelectorAll('.rental-filter-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        activeTipo = btn.getAttribute('data-tipo');
+                        renderFiltros();
+                        renderTabla();
+                    });
+                });
+            }
+
+            function aplicarFiltros() {
+                return allVehiculos.filter(function (v) {
+                    const tipo = (v.Tipo && String(v.Tipo).trim()) || 'Otros';
+                    const pasaTipo = activeTipo === 'Todos' || tipo === activeTipo;
+                    if (!pasaTipo) return false;
+                    if (!searchTerm) return true;
+                    const haystack = normalize([
+                        v.Vehiculo, v.Tipo, v.Color, v.Motor_Traccion,
+                        v.Transmision, v.Caracteristicas, v.Otros
+                    ].filter(Boolean).join(' '));
+                    return haystack.includes(normalize(searchTerm));
+                });
+            }
+
             function buildFichaHTML(v) {
                 const items = [
+                    ['Tipo', v.Tipo],
                     ['Color', v.Color],
                     ['Motor / Tracción', v.Motor_Traccion],
                     ['Transmisión', v.Transmision],
@@ -1298,11 +1640,11 @@
                     return '<li><strong>' + esc(item[0]) + ':</strong> ' + esc(item[1]) + '</li>';
                 }).join('');
 
-                const imgPath = v.Ruta_Imagen ? ('images/nuevos/' + v.Ruta_Imagen) : 'images/logo-car.png';
+                const imgPath = v.Ruta_Imagen ? ('images/nuevos/' + v.Ruta_Imagen) : 'images/nuevos/logoactualizado.jpeg';
 
                 return '' +
                     '<div class="ficha-tecnica-popover">' +
-                        '<img src="' + esc(imgPath) + '" alt="' + esc(v.Vehiculo) + '" class="ficha-img" onerror="this.src=\'images/logo-car.png\'">' +
+                        '<img src="' + esc(imgPath) + '" alt="' + esc(v.Vehiculo) + '" class="ficha-img" onerror="this.src=\'images/nuevos/logoactualizado.jpeg\'">' +
                         '<ul class="ficha-list">' + (rows || '<li>Sin información adicional.</li>') + '</ul>' +
                         '<a href="' + waLink(v.Vehiculo) + '" target="_blank" rel="noopener" class="btn btn-success btn-sm w-100">' +
                             '<iconify-icon icon="mdi:whatsapp"></iconify-icon> Consultar por WhatsApp' +
@@ -1311,9 +1653,11 @@
             }
 
             function initFicha(el, v) {
+                const existing = bootstrap.Popover.getInstance(el);
+                if (existing) existing.dispose();
                 new bootstrap.Popover(el, {
                     html: true,
-                    trigger: 'hover focus',
+                    trigger: 'hover focus click',
                     placement: 'auto',
                     container: 'body',
                     sanitize: false,
@@ -1322,6 +1666,127 @@
                 });
             }
 
+            // ============================================================
+            //  RENDER DE LA TABLA (aplica filtro de tipo + búsqueda)
+            // ============================================================
+            function renderTabla() {
+                const lista = aplicarFiltros();
+
+                // Contador de resultados
+                countBadgeEl.innerHTML = 'Mostrando <strong>' + lista.length + '</strong> de <strong>' + allVehiculos.length + '</strong> vehículos';
+
+                // Etiqueta de búsqueda activa (con botón para limpiar)
+                if (searchTerm) {
+                    searchTagEl.innerHTML = '' +
+                        '<span class="rental-search-active-tag">' +
+                            '<iconify-icon icon="mdi:magnify"></iconify-icon> "' + esc(searchTerm) + '"' +
+                            '<button type="button" id="clearSearchBtn" aria-label="Limpiar búsqueda">✕</button>' +
+                        '</span>';
+                    document.getElementById('clearSearchBtn').addEventListener('click', function () {
+                        searchTerm = '';
+                        navSearchInput.value = '';
+                        renderTabla();
+                    });
+                } else {
+                    searchTagEl.innerHTML = '';
+                }
+
+                if (lista.length === 0) {
+                    tbody.innerHTML = '' +
+                        '<tr><td colspan="6" class="rental-table-empty">' +
+                            '<iconify-icon icon="mdi:car-off"></iconify-icon>' +
+                            'No se encontraron vehículos con estos filtros.<br>' +
+                            '<button type="button" class="rental-reset-btn" id="resetFiltersBtn">Quitar filtros</button>' +
+                        '</td></tr>';
+                    const resetBtn = document.getElementById('resetFiltersBtn');
+                    if (resetBtn) {
+                        resetBtn.addEventListener('click', function () {
+                            activeTipo = 'Todos';
+                            searchTerm = '';
+                            navSearchInput.value = '';
+                            renderFiltros();
+                            renderTabla();
+                        });
+                    }
+                    return;
+                }
+
+                tbody.innerHTML = '';
+
+                lista.forEach(function (v) {
+                    const tr = document.createElement('tr');
+                    const imgPath = v.Ruta_Imagen ? ('images/nuevos/' + v.Ruta_Imagen) : '';
+                    const tipoBadge = v.Tipo ? '<span class="rental-tipo-badge">' + esc(v.Tipo) + '</span>' : '';
+
+                    tr.innerHTML = '' +
+                        '<td class="rental-cell-img" data-label="Imagen">' +
+                            (imgPath ?
+                                '<img src="' + esc(imgPath) + '" class="rental-thumb" alt="' + esc(v.Vehiculo) + '" onerror="this.parentElement.innerHTML=\'<div class=&quot;rental-placeholder-thumb&quot;><iconify-icon icon=&quot;mdi:image-off&quot;></iconify-icon></div>\'">' :
+                                '<div class="rental-placeholder-thumb"><iconify-icon icon="mdi:image-off"></iconify-icon></div>'
+                            ) +
+                        '</td>' +
+                        '<td data-label="Vehículo"><div class="rental-vehiculo-cell"><a href="#" class="rental-name-link">' + esc(v.Vehiculo) + '</a>' + tipoBadge + '</div></td>' +
+                        '<td data-label="Motor / Tracción">' + (esc(v.Motor_Traccion) || '—') + '</td>' +
+                        '<td data-label="Transmisión">' + (esc(v.Transmision) || '—') + '</td>' +
+                        '<td data-label="A/C">' + (esc(v.Aire_Acondicionado) || '—') + '</td>' +
+                        '<td class="text-center" data-label="Acción">' +
+                            '<a href="' + waLink(v.Vehiculo) + '" target="_blank" rel="noopener" class="btn btn-primary btn-sm">' +
+                                '<iconify-icon icon="mdi:whatsapp"></iconify-icon> Rentar ahora' +
+                            '</a>' +
+                        '</td>';
+
+                    tbody.appendChild(tr);
+
+                    const imgEl = tr.querySelector('.rental-thumb');
+                    const nameEl = tr.querySelector('.rental-name-link');
+                    if (imgEl) initFicha(imgEl, v);
+                    if (nameEl) {
+                        initFicha(nameEl, v);
+                        nameEl.addEventListener('click', function (e) { e.preventDefault(); });
+                    }
+                });
+            }
+
+            // ============================================================
+            //  BUSCADOR GENERAL (junto al menú superior)
+            // ============================================================
+            let searchDebounce = null;
+            navSearchToggle.addEventListener('click', function () {
+                const opening = !navSearchForm.classList.contains('active');
+                navSearchForm.classList.toggle('active');
+                if (opening) {
+                    setTimeout(function () { navSearchInput.focus(); }, 200);
+                }
+            });
+
+            navSearchInput.addEventListener('input', function () {
+                clearTimeout(searchDebounce);
+                const val = navSearchInput.value;
+                searchDebounce = setTimeout(function () {
+                    searchTerm = val.trim();
+                    renderTabla();
+                }, 250);
+            });
+
+            navSearchForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearTimeout(searchDebounce);
+                searchTerm = navSearchInput.value.trim();
+                renderTabla();
+                const rentalSection = document.getElementById('rental');
+                if (rentalSection) rentalSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            // Cierra el buscador si el usuario hace clic fuera y está vacío
+            document.addEventListener('click', function (e) {
+                if (!navSearchInput.value && !e.target.closest('.nav-search-wrapper')) {
+                    navSearchForm.classList.remove('active');
+                }
+            });
+
+            // ============================================================
+            //  CARGA DE DATOS DESDE FIREBASE
+            // ============================================================
             async function loadVehiculos() {
                 try {
                     if (typeof config === 'undefined' || !config.databaseURL) {
@@ -1331,42 +1796,15 @@
                     const data = await res.json();
 
                     if (!data) {
+                        filtersEl.innerHTML = '';
+                        countBadgeEl.innerHTML = '';
                         tbody.innerHTML = '<tr><td colspan="6" class="rental-table-empty">No hay vehículos disponibles en este momento.</td></tr>';
                         return;
                     }
 
-                    const vehiculos = Object.values(data);
-                    tbody.innerHTML = '';
-
-                    vehiculos.forEach(function (v) {
-                        const tr = document.createElement('tr');
-                        const imgPath = v.Ruta_Imagen ? ('images/nuevos/' + v.Ruta_Imagen) : '';
-
-                        tr.innerHTML = '' +
-                            '<td class="rental-cell-img">' +
-                                (imgPath ?
-                                    '<img src="' + esc(imgPath) + '" class="rental-thumb" alt="' + esc(v.Vehiculo) + '" onerror="this.parentElement.innerHTML=\'<div class=&quot;rental-placeholder-thumb&quot;><iconify-icon icon=&quot;mdi:image-off&quot;></iconify-icon></div>\'">' :
-                                    '<div class="rental-placeholder-thumb"><iconify-icon icon="mdi:image-off"></iconify-icon></div>'
-                                ) +
-                            '</td>' +
-                            '<td><a href="#" class="rental-name-link">' + esc(v.Vehiculo) + '</a></td>' +
-                            '<td>' + (esc(v.Motor_Traccion) || '—') + '</td>' +
-                            '<td>' + (esc(v.Transmision) || '—') + '</td>' +
-                            '<td>' + (esc(v.Aire_Acondicionado) || '—') + '</td>' +
-                            '<td class="text-center">' +
-                                '<a href="' + waLink(v.Vehiculo) + '" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Rentar ahora</a>' +
-                            '</td>';
-
-                        tbody.appendChild(tr);
-
-                        const imgEl = tr.querySelector('.rental-thumb');
-                        const nameEl = tr.querySelector('.rental-name-link');
-                        if (imgEl) initFicha(imgEl, v);
-                        if (nameEl) {
-                            initFicha(nameEl, v);
-                            nameEl.addEventListener('click', function (e) { e.preventDefault(); });
-                        }
-                    });
+                    allVehiculos = Object.values(data);
+                    renderFiltros();
+                    renderTabla();
                 } catch (err) {
                     console.error(err);
                     tbody.innerHTML = '<tr><td colspan="6" class="rental-table-empty">No se pudieron cargar los vehículos. Intenta más tarde.</td></tr>';
