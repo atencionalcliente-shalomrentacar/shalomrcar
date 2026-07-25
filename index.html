@@ -41,6 +41,16 @@
 
     <!-- Estilos tabla de vehículos (datos dinámicos desde Firebase) ================================================== -->
     <style>
+        /* ===================== ANCHO COMPLETO / MARGENES MINIMOS ===================== */
+        .container {
+            max-width: 100% !important;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        @media (min-width: 576px) {
+            .container { padding-left: 1.25rem; padding-right: 1.25rem; }
+        }
+
         .rental-table-wrapper {
             background: #ffffff;
             border: 1px solid #e2e8f0;
@@ -108,24 +118,95 @@
             padding: 3rem 1rem;
             color: #64748b;
         }
-        .ficha-tecnica-popover { max-width: 250px; }
+        /* ===================== FICHA TÉCNICA (popover) REDISEÑADA ===================== */
+        .popover.ficha-popover-custom {
+            max-width: 300px;
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 18px 45px rgba(2, 69, 114, 0.22), 0 2px 8px rgba(2, 69, 114, 0.1);
+            overflow: hidden;
+        }
+        .popover.ficha-popover-custom .popover-body {
+            padding: 0;
+        }
+        .ficha-tecnica-popover {
+            width: 100%;
+            font-family: inherit;
+        }
+        .ficha-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 0.9rem;
+            background: linear-gradient(135deg, #024572 0%, #01355a 100%);
+            color: #ffffff;
+        }
+        .ficha-header-logo {
+            width: 26px;
+            height: 26px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #ffffff;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+        .ficha-header-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+            min-width: 0;
+        }
+        .ficha-header-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ficha-header-sub {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.75);
+        }
         .ficha-img {
             width: 100%;
             height: 140px;
             object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 0.6rem;
+            display: block;
             background: #f1f5f9;
+        }
+        .ficha-body {
+            padding: 0.75rem 0.9rem 0.9rem;
         }
         .ficha-list {
             list-style: none;
             padding: 0;
-            margin: 0 0 0.6rem 0;
+            margin: 0 0 0.7rem 0;
             font-size: 0.8rem;
-            line-height: 1.4;
+            line-height: 1.45;
         }
-        .ficha-list li { margin-bottom: 0.3rem; }
-        .ficha-list li strong { color: #024572; }
+        .ficha-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.6rem;
+            padding: 0.28rem 0;
+            border-bottom: 1px dashed #e6edf3;
+        }
+        .ficha-list li:last-child { border-bottom: none; }
+        .ficha-list li strong {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+        .ficha-list li span {
+            color: #1f2d3a;
+            font-weight: 600;
+            text-align: right;
+        }
         .popover { max-width: 280px; }
         .popover-header {
             background: #024572;
@@ -1637,32 +1718,106 @@
                 ].filter(function (item) { return item[1] && String(item[1]).trim() !== ''; });
 
                 const rows = items.map(function (item) {
-                    return '<li><strong>' + esc(item[0]) + ':</strong> ' + esc(item[1]) + '</li>';
+                    return '<li><strong>' + esc(item[0]) + '</strong><span>' + esc(item[1]) + '</span></li>';
                 }).join('');
 
                 const imgPath = v.Ruta_Imagen ? ('images/nuevos/' + v.Ruta_Imagen) : 'images/nuevos/logoactualizado.jpeg';
+                const logoPath = 'images/nuevos/logoactualizado.jpeg';
 
                 return '' +
                     '<div class="ficha-tecnica-popover">' +
+                        '<div class="ficha-header">' +
+                            '<img src="' + logoPath + '" alt="Shalom Rent a Car" class="ficha-header-logo">' +
+                            '<div class="ficha-header-text">' +
+                                '<span class="ficha-header-title">' + esc(v.Vehiculo) + '</span>' +
+                                '<span class="ficha-header-sub">Ficha técnica</span>' +
+                            '</div>' +
+                        '</div>' +
                         '<img src="' + esc(imgPath) + '" alt="' + esc(v.Vehiculo) + '" class="ficha-img" onerror="this.src=\'images/nuevos/logoactualizado.jpeg\'">' +
-                        '<ul class="ficha-list">' + (rows || '<li>Sin información adicional.</li>') + '</ul>' +
-                        '<a href="' + waLink(v.Vehiculo) + '" target="_blank" rel="noopener" class="btn btn-success btn-sm w-100">' +
-                            '<iconify-icon icon="mdi:whatsapp"></iconify-icon> Consultar por WhatsApp' +
-                        '</a>' +
+                        '<div class="ficha-body">' +
+                            '<ul class="ficha-list">' + (rows || '<li>Sin información adicional.</li>') + '</ul>' +
+                            '<a href="' + waLink(v.Vehiculo) + '" target="_blank" rel="noopener" class="btn btn-success btn-sm w-100">' +
+                                '<iconify-icon icon="mdi:whatsapp"></iconify-icon> Consultar por WhatsApp' +
+                            '</a>' +
+                        '</div>' +
                     '</div>';
             }
+
+            // ============================================================
+            //  FICHA TÉCNICA: hover con "gracia" de un par de segundos y
+            //  permanencia mientras el puntero esté sobre la propia ficha.
+            // ============================================================
+            const FICHA_HIDE_DELAY = 2500; // ms que permanece visible tras quitar el puntero
+            let currentFichaPopover = null; // referencia a la instancia actualmente abierta
 
             function initFicha(el, v) {
                 const existing = bootstrap.Popover.getInstance(el);
                 if (existing) existing.dispose();
-                new bootstrap.Popover(el, {
+
+                const popover = new bootstrap.Popover(el, {
                     html: true,
-                    trigger: 'hover focus click',
+                    trigger: 'manual',
                     placement: 'auto',
                     container: 'body',
                     sanitize: false,
-                    title: esc(v.Vehiculo),
+                    customClass: 'ficha-popover-custom',
+                    title: '',
                     content: function () { return buildFichaHTML(v); }
+                });
+
+                let hideTimer = null;
+
+                function clearHideTimer() {
+                    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+                }
+
+                function scheduleHide() {
+                    clearHideTimer();
+                    hideTimer = setTimeout(function () { popover.hide(); }, FICHA_HIDE_DELAY);
+                }
+
+                function showFicha() {
+                    clearHideTimer();
+                    if (currentFichaPopover && currentFichaPopover !== popover) {
+                        currentFichaPopover.hide();
+                    }
+                    currentFichaPopover = popover;
+                    popover.show();
+                }
+
+                // Una vez mostrada la ficha, engancha listeners sobre el propio
+                // elemento flotante para que no se cierre mientras el puntero
+                // esté encima de ella.
+                el.addEventListener('shown.bs.popover', function () {
+                    const tipId = el.getAttribute('aria-describedby');
+                    const tip = tipId ? document.getElementById(tipId) : null;
+                    if (!tip || tip._fichaHoverBound) return;
+                    tip._fichaHoverBound = true;
+                    tip.addEventListener('mouseenter', clearHideTimer);
+                    tip.addEventListener('mouseleave', scheduleHide);
+                });
+
+                el.addEventListener('hidden.bs.popover', function () {
+                    if (currentFichaPopover === popover) currentFichaPopover = null;
+                });
+
+                el.addEventListener('mouseenter', showFicha);
+                el.addEventListener('mouseleave', scheduleHide);
+                el.addEventListener('focus', showFicha);
+                el.addEventListener('blur', scheduleHide);
+
+                // En pantallas táctiles (sin hover) el click abre/cierra la ficha.
+                el.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (el.classList.contains('rental-thumb') || el.classList.contains('rental-name-link')) {
+                        const isShown = el.getAttribute('aria-describedby');
+                        if (isShown) {
+                            clearHideTimer();
+                            popover.hide();
+                        } else {
+                            showFicha();
+                        }
+                    }
                 });
             }
 
