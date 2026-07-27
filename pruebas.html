@@ -118,6 +118,47 @@
             padding: 3rem 1rem;
             color: #64748b;
         }
+        /* ===================== FILA SEPARADORA DE GRUPO (por tipo) ===================== */
+        .rental-table tbody tr.rental-group-row {
+            background: #eaf2f7 !important;
+        }
+        .rental-table tbody tr.rental-group-row:hover {
+            background: #eaf2f7 !important;
+        }
+        .rental-table tbody tr.rental-group-row td {
+            padding: 0.55rem 1rem;
+            font-weight: 700;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--src-blue);
+            border-bottom: 1px solid #d7e4ec;
+            display: table-cell !important; /* evita que el CSS responsive lo oculte */
+        }
+        .rental-table tbody tr.rental-group-row td::before {
+            content: none !important; /* sin la etiqueta de "data-label" en móvil */
+        }
+        .rental-table tbody tr.rental-group-row td iconify-icon {
+            font-size: 0.95rem;
+            margin-right: 0.3rem;
+            vertical-align: -2px;
+        }
+        @media (max-width: 767.98px) {
+            .rental-table tbody tr.rental-group-row {
+                display: block !important;
+                padding: 0;
+                margin-bottom: 0.4rem;
+                border-radius: 6px;
+                box-shadow: none !important;
+            }
+            .rental-table tbody tr.rental-group-row td {
+                display: block !important;
+                text-align: left !important;
+                padding: 0.5rem 0.75rem;
+                border-radius: 6px;
+                border-bottom: none;
+            }
+        }
         /* ===================== FICHA TÉCNICA (popover) REDISEÑADA ===================== */
         .popover.ficha-popover-custom {
             max-width: 300px;
@@ -1904,6 +1945,27 @@
                 return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
             }
 
+            // ============================================================
+            //  ORDEN / AGRUPACIÓN DE LA TABLA POR TIPO DE VEHÍCULO
+            //  Orden solicitado: Sedán, SUV / Crossover, SUV, Pick-up,
+            //  Van / Microbus. Cualquier tipo que no coincida con estas
+            //  categorías se envía al final, en su propio grupo (sin romper
+            //  el orden pedido para los tipos conocidos).
+            // ============================================================
+            function categorizarTipo(tipoOriginal) {
+                const t = normalize(tipoOriginal);
+                if (t.includes('sedan')) return { orden: 0, label: 'Sedán' };
+                if (t.includes('suv') && (t.includes('crossover') || t.includes('cross'))) {
+                    return { orden: 1, label: 'SUV / Crossover' };
+                }
+                if (t.includes('suv')) return { orden: 2, label: 'SUV' };
+                if (t.includes('pick')) return { orden: 3, label: 'Pick-up' };
+                if (t.includes('van') || t.includes('microbus') || t.includes('furgon') || t.includes('minivan')) {
+                    return { orden: 4, label: 'Van / Microbus' };
+                }
+                return { orden: 5, label: (tipoOriginal && String(tipoOriginal).trim()) || 'Otros' };
+            }
+
             // Icono representativo según el tipo de vehículo (con fallback por palabra clave,
             // para que tipos nuevos que no estén en el mapa igual muestren algo razonable).
             function getTipoIcon(tipo) {
@@ -1960,7 +2022,7 @@
             }
 
             function aplicarFiltros() {
-                return allVehiculos.filter(function (v) {
+                const filtrados = allVehiculos.filter(function (v) {
                     const tipo = (v.Tipo && String(v.Tipo).trim()) || 'Otros';
                     const pasaTipo = activeTipo === 'Todos' || tipo === activeTipo;
                     if (!pasaTipo) return false;
@@ -1971,6 +2033,17 @@
                     ].filter(Boolean).join(' '));
                     return haystack.includes(normalize(searchTerm));
                 });
+
+                // Orden/agrupación: Sedán, SUV / Crossover, SUV, Pick-up, Van / Microbus,
+                // y cualquier otro tipo al final. Dentro de cada grupo, orden alfabético.
+                filtrados.sort(function (a, b) {
+                    const ca = categorizarTipo(a.Tipo);
+                    const cb = categorizarTipo(b.Tipo);
+                    if (ca.orden !== cb.orden) return ca.orden - cb.orden;
+                    return String(a.Vehiculo || '').localeCompare(String(b.Vehiculo || ''), 'es');
+                });
+
+                return filtrados;
             }
 
             function buildFichaHTML(v) {
@@ -2136,7 +2209,22 @@
 
                 tbody.innerHTML = '';
 
+                let grupoActual = null;
+
                 lista.forEach(function (v) {
+                    const grupo = categorizarTipo(v.Tipo);
+
+                    // Inserta una fila separadora cada vez que cambia el grupo,
+                    // para agrupar visualmente Sedán, SUV / Crossover, SUV,
+                    // Pick-up y Van / Microbus dentro de la misma tabla.
+                    if (grupo.label !== grupoActual) {
+                        grupoActual = grupo.label;
+                        const trGrupo = document.createElement('tr');
+                        trGrupo.className = 'rental-group-row';
+                        trGrupo.innerHTML = '<td colspan="6"><iconify-icon icon="' + getTipoIcon(grupo.label) + '"></iconify-icon> ' + esc(grupo.label) + '</td>';
+                        tbody.appendChild(trGrupo);
+                    }
+
                     const tr = document.createElement('tr');
                     const imgPath = v.Ruta_Imagen ? ('images/nuevos/' + v.Ruta_Imagen) : '';
                     const tipoBadge = v.Tipo ? '<span class="rental-tipo-badge">' + esc(v.Tipo) + '</span>' : '';
