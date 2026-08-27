@@ -900,17 +900,17 @@
 <div id="loginSection" class="login-wrapper">
     <div class="login-card">
         <h1 class="login-title">🔐 Iniciar Sesión</h1>
-        <p class="login-sub">Ingresa tu usuario y contraseña</p>
+        <p class="login-sub">Ingresa tu correo electrónico y contraseña</p>
         <form id="loginForm" onsubmit="login(event)">
             <div class="mb-3">
-                <label class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="loginUser" placeholder="" required>
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="loginUser" placeholder="correo@dominio.com" autocomplete="username" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="loginPassword" placeholder="" required>
+                <input type="password" class="form-control" id="loginPassword" placeholder="" autocomplete="current-password" required>
             </div>
-            <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
+            <div id="loginError" class="login-error">Correo o contraseña incorrectos.</div>
             <button type="submit" class="btn btn-login">Acceder al Panel</button>
         </form>
     </div>
@@ -1153,12 +1153,36 @@
     <div class="loading-text-db">Sincronizando con Firebase...</div>
 </div>
 
-<script src="config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlO9ULEIETH02LOx3NVPnMCkQCG14nB0U",
+      authDomain: "shalomrcarmant.firebaseapp.com",
+      databaseURL: "https://shalomrcarmant-default-rtdb.firebaseio.com",
+      projectId: "shalomrcarmant",
+      storageBucket: "shalomrcarmant.firebasestorage.app",
+      messagingSenderId: "78788139942",
+      appId: "1:78788139942:web:8f0097f1143f085f960d67",
+      measurementId: "G-X2CC17QNH3"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
+    // ============================================================
+    //  VERSIÓN DE MIGRACIÓN SEGURA - FIREBASE AUTH
+    //  - Login: Firebase Authentication (Email/Password)
+    //  - Rol: /roles/{uid}/rol
+    //  - CRUD Vehículos: REST autenticado con ID token
+    //  - Gestión de usuarios legado: deshabilitada temporalmente
+    // ============================================================
+
     // ============================================================
     //  CONFIGURACIÓN GLOBAL
     // ============================================================
@@ -1180,24 +1204,28 @@
     //  INICIALIZACIÓN
     // ============================================================
     async function init() {
-        try {
-            if (typeof config !== 'undefined' && config.databaseURL) {
-                dbUrl = config.databaseURL;
-                addActivity('connect', 'Conexión establecida con Firebase');
-            } else {
-                throw new Error('config.js no encontrado');
-            }
-        } catch (e) {
-            showToast('Error', 'No se pudo leer config.js', 'error');
-            return;
-        }
+        dbUrl = firebaseConfig.databaseURL.replace(/\/?$/, '/');
+        addActivity('connect', 'Firebase inicializado');
 
-        const session = JSON.parse(sessionStorage.getItem('userSession'));
-        if (session && session.id) {
-            await setCurrentUser(session.id);
-        } else {
-            showLogin();
-        }
+        auth.onAuthStateChanged(async (firebaseUser) => {
+            if (firebaseUser) {
+                await setCurrentUser(firebaseUser);
+            } else {
+                currentUser = null;
+                isAdmin = false;
+                showLogin();
+            }
+        });
+    }
+
+    // Llamadas REST autenticadas. Firebase Security Rules recibe auth.uid
+    // porque cada solicitud lleva el ID token del usuario conectado.
+    async function dbFetch(url, options = {}) {
+        const firebaseUser = auth.currentUser;
+        if (!firebaseUser) throw new Error('Usuario no autenticado');
+        const token = await firebaseUser.getIdToken();
+        const separator = url.includes('?') ? '&' : '?';
+        return window.fetch(`${url}${separator}auth=${encodeURIComponent(token)}`, options);
     }
 
     // ============================================================
@@ -1219,56 +1247,36 @@
 
     async function login(e) {
         e.preventDefault();
-        const nombre = document.getElementById('loginUser').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
+        const email = document.getElementById('loginUser').value.trim();
+        const password = document.getElementById('loginPassword').value;
         const errorEl = document.getElementById('loginError');
 
-        if (!nombre || !password) {
-            errorEl.textContent = 'Completa todos los campos.';
+        if (!email || !password) {
+            errorEl.textContent = 'Completa correo electrónico y contraseña.';
             errorEl.style.display = 'block';
             return;
         }
 
         showLoading(true);
         try {
-            const res = await fetch(`${dbUrl}usuarios.json`);
-            const data = await res.json();
-            if (!data) {
-                errorEl.textContent = 'No hay usuarios registrados.';
-                errorEl.style.display = 'block';
-                showLoading(false);
-                return;
-            }
-
-            let found = null;
-            for (const [key, user] of Object.entries(data)) {
-                if (user.nombre && user.nombre.toLowerCase() === nombre.toLowerCase() &&
-                    user.password === password) {
-                    found = { id: key, ...user };
-                    break;
-                }
-            }
-
-            if (found) {
-                errorEl.style.display = 'none';
-                sessionStorage.setItem('userSession', JSON.stringify({ id: found.id }));
-                await setCurrentUser(found.id);
-                showToast('Bienvenido', `Hola ${found.nombre}`, 'success');
-                addActivity('insert', `Inicio de sesión: ${found.nombre}`);
-            } else {
-                errorEl.textContent = 'Usuario o contraseña incorrectos.';
-                errorEl.style.display = 'block';
-            }
+            errorEl.style.display = 'none';
+            await auth.signInWithEmailAndPassword(email, password);
+            // onAuthStateChanged continúa el proceso y valida el rol.
         } catch (err) {
-            errorEl.textContent = 'Error al conectar con la base de datos.';
-            errorEl.style.display = 'block';
             console.error(err);
+            errorEl.textContent = 'Correo o contraseña incorrectos.';
+            errorEl.style.display = 'block';
+        } finally {
+            showLoading(false);
         }
-        showLoading(false);
     }
 
-    function logout() {
-        sessionStorage.removeItem('userSession');
+    async function logout() {
+        try {
+            await auth.signOut();
+        } catch (e) {
+            console.error(e);
+        }
         currentUser = null;
         isAdmin = false;
         showLogin();
@@ -1276,38 +1284,47 @@
         addActivity('delete', 'Cierre de sesión');
     }
 
-    async function setCurrentUser(userId) {
+    async function setCurrentUser(firebaseUser) {
         try {
-            const res = await fetch(`${dbUrl}usuarios/${userId}.json`);
-            const user = await res.json();
-            if (user) {
-                currentUser = { id: userId, ...user };
+            // La autorización real se obtiene del nodo protegido /roles/{uid}/rol.
+            const roleRes = await dbFetch(`${dbUrl}roles/${firebaseUser.uid}/rol.json`);
+            if (!roleRes.ok) throw new Error(`No se pudo validar el rol (${roleRes.status})`);
+            const rol = await roleRes.json();
 
-                // ==== ANÁLISIS DE ROL EN SEGUNDO PLANO ====
-                // Se evalúa el rol del usuario autenticado; solo "Administrador"
-                // obtiene acceso al módulo CRUD del nodo Usuarios y a la gestión
-                // masiva de datos (Excel) del nodo Vehículos.
-                isAdmin = (user.rol === 'Administrador');
-
-                showApp();
-                await loadVehiculos();
-                await loadUsuarios();
-                setView('vehiculos');
-                // Mostrar configuración y módulo de usuarios solo si es admin
-                document.getElementById('configSection').style.display = isAdmin ? 'block' : 'none';
-                document.getElementById('btnToggleView').style.display = isAdmin ? 'inline-flex' : 'none';
-
-                addActivity('sync', `Sesión iniciada como ${user.nombre}`);
-                addActivity(isAdmin ? 'insert' : 'sync', isAdmin
-                    ? `Rol detectado: Administrador — acceso habilitado a CRUD de Usuarios y carga masiva de Vehículos`
-                    : `Rol detectado: ${user.rol || 'Usuario'} — modo de acceso restringido`);
-            } else {
-                logout();
-                showToast('Sesión expirada', 'El usuario ha sido eliminado', 'error');
+            if (rol !== 'Administrador') {
+                await auth.signOut();
+                showLogin();
+                const errorEl = document.getElementById('loginError');
+                errorEl.textContent = 'Tu cuenta no tiene permisos de Administrador.';
+                errorEl.style.display = 'block';
+                return;
             }
+
+            currentUser = {
+                id: firebaseUser.uid,
+                nombre: firebaseUser.displayName || firebaseUser.email || 'Administrador',
+                email: firebaseUser.email || '',
+                rol
+            };
+            isAdmin = true;
+
+            showApp();
+            await loadVehiculos();
+            setView('vehiculos');
+
+            // Gestión de cuentas Auth se hará después desde Firebase Console/Cloud Function.
+            // Se oculta el módulo legado para no volver a almacenar contraseñas en Realtime Database.
+            document.getElementById('configSection').style.display = 'none';
+            document.getElementById('btnToggleView').style.display = 'none';
+
+            showToast('Bienvenido', `Sesión segura iniciada como ${currentUser.nombre}`, 'success');
+            addActivity('sync', `Autenticado con Firebase Auth: ${currentUser.nombre}`);
+            addActivity('insert', 'Rol validado: Administrador');
         } catch (e) {
             console.error(e);
-            showToast('Error', 'No se pudo cargar la sesión', 'error');
+            showToast('Error de autenticación', 'No se pudo validar tu rol de Administrador', 'error');
+            try { await auth.signOut(); } catch (_) {}
+            showLogin();
         }
     }
 
@@ -1316,7 +1333,7 @@
     // ============================================================
     async function loadVehiculos() {
         try {
-            const res = await fetch(`${dbUrl}vehiculos.json`);
+            const res = await dbFetch(`${dbUrl}vehiculos.json`);
             vehiculosData = (await res.json()) || {};
             updateTipoDatalist();
         } catch (e) { showToast('Error DB', 'No se pudieron cargar los vehículos', 'error'); }
@@ -1341,7 +1358,7 @@
 
     async function loadUsuarios() {
         try {
-            const res = await fetch(`${dbUrl}usuarios.json`);
+            const res = await dbFetch(`${dbUrl}usuarios.json`);
             usuariosData = (await res.json()) || {};
         } catch (e) { showToast('Error DB', 'No se pudieron cargar los usuarios', 'error'); }
     }
@@ -1432,7 +1449,8 @@
     }
 
     function toggleView() {
-        setView(currentView === 'vehiculos' ? 'usuarios' : 'vehiculos');
+        showToast('Gestión de usuarios', 'Por seguridad, las cuentas se administran temporalmente desde Firebase Authentication.', 'info');
+        setView('vehiculos');
     }
 
     // ============================================================
@@ -1617,7 +1635,7 @@
 
         showLoading(true);
         try {
-            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const res = await dbFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             if (!res.ok) throw new Error('Error');
             showToast('Éxito', id ? 'Vehículo actualizado' : 'Vehículo creado', 'success');
             addActivity(id ? 'update' : 'insert', `${id ? 'Actualizado' : 'Creado'}: ${vehiculo}`);
@@ -1637,7 +1655,7 @@
         if (!v) return;
         if (!confirm(`¿Eliminar vehículo "${v.Vehiculo}"?`)) return;
         showLoading(true);
-        fetch(`${dbUrl}vehiculos/${key}.json`, { method: 'DELETE' })
+        dbFetch(`${dbUrl}vehiculos/${key}.json`, { method: 'DELETE' })
             .then(() => {
                 showToast('Eliminado', 'Vehículo eliminado', 'success');
                 addActivity('delete', `Eliminado: ${v.Vehiculo}`);
@@ -1703,7 +1721,7 @@
 
         showLoading(true);
         try {
-            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const res = await dbFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             if (!res.ok) throw new Error('Error');
             showToast('Éxito', id ? 'Usuario actualizado' : 'Usuario creado', 'success');
             addActivity(id ? 'update' : 'insert', `${id ? 'Actualizado' : 'Creado'}: ${nombre}`);
@@ -1727,7 +1745,7 @@
         }
         if (!confirm(`¿Eliminar al usuario "${u.nombre}"?`)) return;
         showLoading(true);
-        fetch(`${dbUrl}usuarios/${key}.json`, { method: 'DELETE' })
+        dbFetch(`${dbUrl}usuarios/${key}.json`, { method: 'DELETE' })
             .then(() => {
                 showToast('Eliminado', 'Usuario eliminado', 'success');
                 addActivity('delete', `Eliminado: ${u.nombre}`);
@@ -1813,7 +1831,7 @@
 
                 // Función 3: limpiar el nodo vehículos antes de cargar la nueva data
                 if (mode === 'replace') {
-                    await fetch(`${dbUrl}vehiculos.json`, { method: 'DELETE' });
+                    await dbFetch(`${dbUrl}vehiculos.json`, { method: 'DELETE' });
                     addActivity('delete', 'Nodo Vehículos limpiado antes de la carga masiva');
                 }
 
@@ -1821,7 +1839,7 @@
                 for (const row of excelData) {
                     const cleanRow = mapExcelRowToVehiculo(row);
                     if (!cleanRow.Vehiculo) { errorCount++; continue; }
-                    const res = await fetch(`${dbUrl}vehiculos.json`, {
+                    const res = await dbFetch(`${dbUrl}vehiculos.json`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(cleanRow)
@@ -1989,7 +2007,7 @@
                         };
                     }
 
-                    const res = await fetch(`${dbUrl}${targetNode}.json`, {
+                    const res = await dbFetch(`${dbUrl}${targetNode}.json`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(cleanRow)
