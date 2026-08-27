@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shalom Rent a Car | Mantenimiento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-panel: #1e293b;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #dc2626;
+            --accent-hover: #b91c1c;
+            --accent-secondary: #1e40af;
+            --success: #10b981;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --warning: #f59e0b;
+            --mono: 'JetBrains Mono', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .navbar-system {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            border-bottom: 3px solid var(--accent);
+            padding: 0;
+            min-height: 64px;
+        }
+        .navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            height: 64px;
+        }
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo-container {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid var(--accent);
+        }
+        .logo-container img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .brand-title {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        .brand-subtitle {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .btn-view-site {
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-view-site:hover {
+            background: var(--accent);
+            color: white;
+        }
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+        }
+        .login-wrapper {
+            min-height: calc(100vh - 64px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            padding: 2rem;
+        }
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            padding: 2.5rem;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid var(--border);
+        }
+        .login-card .login-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--bg-dark);
+            margin-bottom: 0.25rem;
+        }
+        .login-card .login-sub {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        .login-card .form-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+        .login-card .form-control {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+        }
+        .login-card .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(220,38,38,0.15);
+        }
+        .login-card .btn-login {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--accent);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .login-card .btn-login:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220,38,38,0.3);
+        }
+        .login-error {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: calc(100vh - 64px);
+        }
+        .sidebar {
+            background: var(--bg-panel);
+            border-right: 1px solid #334155;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .sidebar-section {
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1.5rem;
+        }
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+        .sidebar-title {
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sidebar-title iconify-icon { color: var(--accent); }
+        .db-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #334155;
+        }
+        .db-metric:last-child { border-bottom: none; }
+        .db-metric-label {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .db-metric-value {
+            color: white;
+            font-family: var(--mono);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .db-metric-value.success { color: var(--success); }
+        .db-metric-value.warning { color: var(--warning); }
+        .db-metric-value.danger { color: var(--danger); }
+        .connection-bar {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .connection-icon { color: var(--success); font-size: 1.25rem; }
+        .connection-info { flex: 1; }
+        .connection-label { color: #94a3b8; font-size: 0.75rem; }
+        .connection-status {
+            color: var(--success);
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: var(--mono);
+        }
+        .db-activity {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+        .activity-item:hover { background: rgba(255,255,255,0.05); }
+        .activity-time {
+            color: #64748b;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            min-width: 50px;
+        }
+        .activity-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .activity-dot.insert { background: var(--success); }
+        .activity-dot.update { background: var(--info); }
+        .activity-dot.delete { background: var(--danger); }
+        .content-area {
+            padding: 1.5rem;
+            overflow-x: hidden;
+        }
+        /* Botón de configuración en sidebar */
+        .sidebar-config-btn {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid var(--accent);
+            color: #cbd5e1;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .sidebar-config-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+        .sidebar-config-btn iconify-icon {
+            color: var(--accent);
+        }
+        .sidebar-config-btn:hover iconify-icon {
+            color: white;
+        }
+        .toolbar-db {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .table-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .table-title iconify-icon { color: var(--accent); }
+        .record-count {
+            background: #f1f5f9;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-family: var(--mono);
+            font-weight: 500;
+        }
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .search-db {
+            position: relative;
+            width: 280px;
+        }
+        .search-db input {
+            width: 100%;
+            padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: #f8fafc;
+            font-family: var(--mono);
+            transition: all 0.2s;
+        }
+        .search-db input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+        }
+        .search-db iconify-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        .btn-db {
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-db-primary {
+            background: var(--accent);
+            color: white;
+        }
+        .btn-db-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220,38,38,0.3);
+        }
+        .btn-db-outline {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .btn-db-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .file-input-db {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .file-input-db input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        .file-label-db {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .file-label-db:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .dropdown-menu-db {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            padding: 0.5rem;
+            min-width: 270px;
+        }
+        .dropdown-menu-db .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .dropdown-menu-db .dropdown-item:hover {
+            background: #fef2f2;
+            color: var(--accent);
+        }
+        .dropdown-menu-db .dropdown-item.danger-item:hover {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+        .dropdown-menu-db .dropdown-item iconify-icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .dropdown-menu-db .dropdown-header-db {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            padding: 0.4rem 0.75rem 0.2rem;
+        }
+        .table-wrapper {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .db-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .db-table thead {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: #e2e8f0;
+        }
+        .db-table thead th {
+            padding: 0.875rem 1rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--accent);
+            white-space: nowrap;
+        }
+        .db-table tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.15s;
+        }
+        .db-table tbody tr:hover { background: #f8fafc; }
+        .db-table tbody tr:nth-child(even) { background: #fafbfc; }
+        .db-table tbody tr:nth-child(even):hover { background: #f1f5f9; }
+        .db-table td {
+            padding: 0.875rem 1rem;
+            vertical-align: middle;
+        }
+        .cell-img {
+            width: 110px;
+        }
+        .vehicle-thumb {
+            width: 100px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: #f1f5f9;
+            display: block;
+        }
+        .placeholder-thumb {
+            width: 100px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            color: #cbd5e1;
+        }
+        .badge-db {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: var(--mono);
+        }
+        .badge-db.admin {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .badge-db.usuario {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .badge-db.invitado {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-db.operativo {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .badge-db.mantenimiento {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-db.revision {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .actions-db {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        .btn-action-db {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        .btn-edit-db {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .btn-edit-db:hover {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-delete-db {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .btn-delete-db:hover {
+            background: #ef4444;
+            color: white;
+        }
+        .empty-db {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        .empty-db iconify-icon {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+        .pagination-db {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            background: #f8fafc;
+        }
+        .page-db {
+            min-width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--mono);
+        }
+        .page-db:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .page-db.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            font-weight: 700;
+        }
+        .page-db:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .modal-content-db {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .modal-header-db {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 3px solid var(--accent);
+        }
+        .modal-title-db {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .modal-title-db iconify-icon { color: var(--accent); }
+        .modal-body-db {
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        .form-section-db {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .form-section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .form-section-title iconify-icon { color: var(--accent); }
+        .form-label-db {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-control-db {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background: white;
+        }
+        .form-control-db:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(220,38,38,0.15);
+        }
+        .form-select-db {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0.625rem 2rem 0.625rem 0.875rem;
+            font-size: 0.875rem;
+            background: white;
+        }
+        .preview-box-db {
+            width: 100%;
+            height: 180px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        .preview-box-db img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .preview-placeholder-db {
+            text-align: center;
+            color: #94a3b8;
+        }
+        .modal-footer-db {
+            padding: 1.25rem 2rem;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        .toast-container-db {
+            position: fixed;
+            top: 80px;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .toast-db {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.875rem;
+            min-width: 320px;
+            max-width: 400px;
+            animation: slideInDb 0.3s ease;
+            border-left: 4px solid var(--success);
+        }
+        .toast-db.error { border-left-color: var(--danger); }
+        .toast-db.warning { border-left-color: var(--warning); }
+        .toast-db.info { border-left-color: var(--info); }
+        @keyframes slideInDb {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .toast-icon-db {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+        .toast-content-db { flex: 1; }
+        .toast-title-db {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        .toast-msg-db {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+        .loading-overlay-db {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15,23,42,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+        .spinner-db {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #334155;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spinDb 1s linear infinite;
+        }
+        @keyframes spinDb {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text-db {
+            color: #94a3b8;
+            margin-top: 1rem;
+            font-family: var(--mono);
+            font-size: 0.875rem;
+        }
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+        @media (max-width: 768px) {
+            .toolbar-db { flex-direction: column; align-items: stretch; }
+            .toolbar-right { flex-direction: column; }
+            .search-db { width: 100%; }
+            .db-table { font-size: 0.8rem; }
+            .db-table td, .db-table th { padding: 0.625rem 0.75rem; }
+            .cell-img { width: 80px; }
+            .vehicle-thumb { width: 70px; height: 50px; }
+            .placeholder-thumb { width: 70px; height: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar-system">
+    <div class="navbar-inner">
+        <div class="brand-section">
+            <div class="logo-container">
+                <img src="images/logo.jpeg" alt="Shalom Rent a Car" onerror="this.style.display='none'; this.parentElement.innerHTML='<iconify-icon icon=mdi:car style=color:#dc2626;font-size:1.5rem;></iconify-icon>'">
+            </div>
+            <div class="brand-text">
+                <div class="brand-title">Shalom Rent a Car</div>
+                <div class="brand-subtitle">Sistema de Mantenimiento</div>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <div class="system-status d-none d-md-flex" id="userInfoHeader">
+                <span id="userNameDisplay">Usuario</span>
+                <span class="status-dot"></span>
+                <span>Firebase Online</span>
+            </div>
+            <button class="btn-logout" id="btnLogout" onclick="logout()" style="display:none;">
+                <iconify-icon icon="mdi:logout"></iconify-icon> Cerrar Sesión
+            </button>
+            <a href="index.html" class="btn-view-site">
+                <iconify-icon icon="mdi:web"></iconify-icon> Ver Sitio Web
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- LOGIN -->
+<div id="loginSection" class="login-wrapper">
+    <div class="login-card">
+        <h1 class="login-title">🔐 Iniciar Sesión</h1>
+        <p class="login-sub">Ingresa tu correo electrónico y contraseña</p>
+        <form id="loginForm" onsubmit="login(event)">
+            <div class="mb-3">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="loginUser" placeholder="correo@dominio.com" autocomplete="username" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="loginPassword" placeholder="" autocomplete="current-password" required>
+            </div>
+            <div id="loginError" class="login-error">Correo o contraseña incorrectos.</div>
+            <button type="submit" class="btn btn-login">Acceder al Panel</button>
+        </form>
+    </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div id="mainLayout" class="main-layout" style="display:none;">
+
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title"><iconify-icon icon="mdi:database-cog"></iconify-icon> Estado de Conexión</div>
+            <div class="connection-bar">
+                <iconify-icon icon="mdi:server-network" class="connection-icon"></iconify-icon>
+                <div class="connection-info">
+                    <div class="connection-label">Base de Datos</div>
+                    <div class="connection-status">● Conectado</div>
+                </div>
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:0.4rem;">
+                Última sincronización: <span id="metricLastSync" style="font-family:var(--mono);font-weight:600;">--:--</span>
+            </div>
+        </div>
+
+        <!-- ===== NUEVA SECCIÓN CONFIGURACIÓN (SOLO ADMIN) ===== -->
+        <div class="sidebar-section" id="configSection" style="display:none;">
+            <div class="sidebar-title"><iconify-icon icon="mdi:settings"></iconify-icon> Configuración</div>
+            <button class="sidebar-config-btn" onclick="toggleView()">
+                <iconify-icon icon="mdi:account-cog" width="20"></iconify-icon>
+                <span>Gestionar Usuarios</span>
+            </button>
+        </div>
+
+        <div class="sidebar-section" id="metricsSection">
+            <div class="sidebar-title"><iconify-icon icon="mdi:chart-bar"></iconify-icon> <span id="metricsTitle">Métricas de Vehículos</span></div>
+            <div id="metricsContent"></div>
+        </div>
+
+        <div class="sidebar-section" style="border-bottom: none;">
+            <div class="sidebar-title"><iconify-icon icon="mdi:history"></iconify-icon> Actividad Reciente</div>
+            <div class="db-activity" id="activityLog">
+                <div class="activity-item"><span class="activity-time">--:--</span><div class="activity-dot insert"></div><span>Sistema iniciado</span></div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="content-area">
+        <div class="toolbar-db">
+            <div class="toolbar-left">
+                <h4 class="table-title" id="viewTitle"><iconify-icon icon="mdi:table-large"></iconify-icon> Inventario de Vehículos</h4>
+                <span class="record-count" id="recordCount">0 registros</span>
+            </div>
+            <div class="toolbar-right">
+                <div class="search-db">
+                    <iconify-icon icon="mdi:magnify" width="18"></iconify-icon>
+                    <input type="text" id="searchInput" placeholder="Buscar...">
+                </div>
+                <button class="btn-db btn-db-outline" id="btnToggleView" onclick="toggleView()" style="display:none;">
+                    <iconify-icon icon="mdi:swap-horizontal"></iconify-icon>
+                    <span id="btnToggleLabel">Configuración</span>
+                </button>
+
+                <!-- Gestión de Vehículos por Excel: 3 funciones (agregar por excel, agregar manual, limpiar y recargar) -->
+                <div class="dropdown" id="excelToolsWrapper" style="display:none;">
+                    <button class="btn-db btn-db-outline dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <iconify-icon icon="mdi:file-excel"></iconify-icon> Datos por Excel
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-db" aria-labelledby="excelToolsWrapper">
+                        <li class="dropdown-header-db">Cargar registros</li>
+                        <li><a class="dropdown-item" href="#" onclick="triggerVehiculoImport('append'); return false;">
+                            <iconify-icon icon="mdi:database-import" style="color:var(--info);"></iconify-icon>
+                            <span>Agregar registros desde Excel</span>
+                        </a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li class="dropdown-header-db">Reemplazo total</li>
+                        <li><a class="dropdown-item danger-item" href="#" onclick="triggerVehiculoImport('replace'); return false;">
+                            <iconify-icon icon="mdi:database-refresh" style="color:var(--danger);"></iconify-icon>
+                            <span>Limpiar y cargar nueva data</span>
+                        </a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item" href="#" onclick="downloadVehiculoTemplate(); return false;">
+                            <iconify-icon icon="mdi:file-download-outline" style="color:var(--success);"></iconify-icon>
+                            <span>Descargar plantilla de Excel</span>
+                        </a></li>
+                    </ul>
+                </div>
+                <input type="file" id="vehiculoFileUpload" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleVehiculoExcelFile()">
+
+                <!-- Import genérico (usado para el nodo Usuarios) -->
+                <div class="file-input-db" id="fileInputWrapper">
+                    <input type="file" id="fileUpload" accept=".xlsx, .xls, .csv">
+                    <label for="fileUpload" class="file-label-db" id="fileLabel">
+                        <iconify-icon icon="mdi:file-upload"></iconify-icon>
+                        <span>Excel/CSV</span>
+                    </label>
+                </div>
+                <button class="btn-db btn-db-outline" onclick="importData()" id="btnImport">
+                    <iconify-icon icon="mdi:database-import"></iconify-icon> Importar
+                </button>
+
+                <button class="btn-db btn-db-outline" onclick="exportToExcel()" id="btnExport">
+                    <iconify-icon icon="mdi:file-excel"></iconify-icon> Exportar
+                </button>
+                <button class="btn-db btn-db-primary" onclick="openModal()" id="btnNew">
+                    <iconify-icon icon="mdi:plus-circle"></iconify-icon>
+                    <span id="btnNewLabel">Nuevo Registro</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <div class="table-responsive">
+                <table class="db-table">
+                    <thead id="tableHead"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div class="pagination-db" id="pagination" style="display: none;"></div>
+        </div>
+    </main>
+</div>
+
+<!-- MODAL VEHÍCULO -->
+<div class="modal fade" id="vehicleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-content-db">
+            <div class="modal-header modal-header-db">
+                <h5 class="modal-title modal-title-db" id="modalTitle"><iconify-icon icon="mdi:database-plus"></iconify-icon> Nuevo Registro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body modal-body-db">
+                <form id="vehicleForm">
+                    <input type="hidden" id="editId">
+                    <div class="form-section-db">
+                        <div class="form-section-title"><iconify-icon icon="mdi:car-info"></iconify-icon> Datos del Vehículo</div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label-db">Vehículo *</label><input type="text" class="form-control form-control-db" id="f_vehiculo" required placeholder="Kia Soul 2023"></div>
+                            <div class="col-md-6">
+                                <label class="form-label-db">Tipo</label>
+                                <input type="text" class="form-control form-control-db" id="f_tipo" list="tipoOptions" placeholder="SUV, Sedán, Pick-up...">
+                                <datalist id="tipoOptions">
+                                    <option value="Sedán">
+                                    <option value="SUV">
+                                    <option value="SUV / Crossover">
+                                    <option value="Pick-up">
+                                    <option value="Hatchback">
+                                    <option value="Van / Microbús">
+                                    <option value="Furgón/Van">
+                                    <option value="Minivan">
+                                    <option value="Coupé">
+                                    <option value="Deportivo">
+                                    <option value="Otro">
+                                </datalist>
+                            </div>
+                            <div class="col-md-6"><label class="form-label-db">Color</label><input type="text" class="form-control form-control-db" id="f_color" placeholder="Rojo Metalizado"></div>
+                            <div class="col-md-6"><label class="form-label-db">Motor / Tracción</label><input type="text" class="form-control form-control-db" id="f_motor" placeholder="2.0L 4x2"></div>
+                            <div class="col-md-6"><label class="form-label-db">Transmisión</label><select class="form-select form-select-db" id="f_transmision"><option value="">-- Seleccionar --</option><option value="Automática">Automática</option><option value="Manual">Manual</option><option value="CVT">CVT</option><option value="DCT">DCT</option></select></div>
+                            <div class="col-md-6"><label class="form-label-db">Aire Acondicionado</label><select class="form-select form-select-db" id="f_ac"><option value="">-- Seleccionar --</option><option value="Sí">Sí</option><option value="No">No</option><option value="Dual Zone">Dual Zone</option></select></div>
+                            <div class="col-md-6"><label class="form-label-db">Estado</label><select class="form-select form-select-db" id="f_estado"><option value="Operativo">Operativo</option><option value="En Mantenimiento">En Mantenimiento</option><option value="Revisión Pendiente">Revisión Pendiente</option></select></div>
+                        </div>
+                    </div>
+                    <div class="form-section-db">
+                        <div class="form-section-title"><iconify-icon icon="mdi:clipboard-text"></iconify-icon> Especificaciones</div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label-db">Características Especiales</label><input type="text" class="form-control form-control-db" id="f_caracteristicas" placeholder="GPS, Bluetooth..."></div>
+                            <div class="col-md-6"><label class="form-label-db">Seguro y Asistencia</label><input type="text" class="form-control form-control-db" id="f_seguro" placeholder="Cobertura total..."></div>
+                            <div class="col-md-12"><label class="form-label-db">Otros / Notas</label><input type="text" class="form-control form-control-db" id="f_otros" placeholder="Observaciones..."></div>
+                        </div>
+                    </div>
+                    <div class="form-section-db" style="margin-bottom:0;">
+                        <div class="form-section-title"><iconify-icon icon="mdi:image"></iconify-icon> Gestión de Imagen</div>
+                        <div class="col-md-12">
+                            <label class="form-label-db">Ruta de Archivo (carpeta /images/nuevos/)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light" style="font-family:var(--mono);font-size:0.8rem;">images/nuevos/</span>
+                                <input type="text" class="form-control form-control-db" id="f_ruta_imagen" placeholder="nombre-archivo.jpg" oninput="previewImage()">
+                            </div>
+                            <div class="preview-box-db" id="imagePreview"><div class="preview-placeholder-db"><iconify-icon icon="mdi:image-off" width="48" style="color:#cbd5e1;"></iconify-icon><p class="mb-0 mt-2">Vista previa no disponible</p></div></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer modal-footer-db">
+                <button type="button" class="btn-db btn-db-outline" data-bs-dismiss="modal"><iconify-icon icon="mdi:close"></iconify-icon> Cancelar</button>
+                <button type="button" class="btn-db btn-db-primary" onclick="saveVehicle()"><iconify-icon icon="mdi:content-save"></iconify-icon> Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL USUARIO -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-content-db">
+            <div class="modal-header modal-header-db">
+                <h5 class="modal-title modal-title-db" id="userModalTitle"><iconify-icon icon="mdi:account-plus"></iconify-icon> Nuevo Usuario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body modal-body-db">
+                <form id="userForm">
+                    <input type="hidden" id="userEditId">
+                    <div class="form-section-db">
+                        <div class="form-section-title"><iconify-icon icon="mdi:account-details"></iconify-icon> Datos del Usuario</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label-db">Nombre *</label>
+                                <input type="text" class="form-control form-control-db" id="f_nombre" required placeholder="Ej: SRCAdmin">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-db">Email</label>
+                                <input type="email" class="form-control form-control-db" id="f_email" placeholder="ejemplo@shalom.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-db">Contraseña</label>
+                                <input type="password" class="form-control form-control-db" id="f_password" placeholder="Mínimo 6 caracteres">
+                                <small class="text-muted">Dejar en blanco para mantener la actual (edición).</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-db">Rol *</label>
+                                <select class="form-select form-select-db" id="f_rol">
+                                    <option value="Usuario">Usuario</option>
+                                    <option value="Administrador">Administrador</option>
+                                    <option value="Invitado">Invitado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer modal-footer-db">
+                <button type="button" class="btn-db btn-db-outline" data-bs-dismiss="modal"><iconify-icon icon="mdi:close"></iconify-icon> Cancelar</button>
+                <button type="button" class="btn-db btn-db-primary" onclick="saveUser()"><iconify-icon icon="mdi:content-save"></iconify-icon> Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container-db" id="toastContainer"></div>
+<div class="loading-overlay-db" id="loadingOverlay" style="display: none;">
+    <div class="spinner-db"></div>
+    <div class="loading-text-db">Sincronizando con Firebase...</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlO9ULEIETH02LOx3NVPnMCkQCG14nB0U",
+      authDomain: "shalomrcarmant.firebaseapp.com",
+      databaseURL: "https://shalomrcarmant-default-rtdb.firebaseio.com",
+      projectId: "shalomrcarmant",
+      storageBucket: "shalomrcarmant.firebasestorage.app",
+      messagingSenderId: "78788139942",
+      appId: "1:78788139942:web:8f0097f1143f085f960d67",
+      measurementId: "G-X2CC17QNH3"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+    // ============================================================
+    //  VERSIÓN DE MIGRACIÓN SEGURA - FIREBASE AUTH
+    //  - Login: Firebase Authentication (Email/Password)
+    //  - Rol: /roles/{uid}/rol
+    //  - CRUD Vehículos: REST autenticado con ID token
+    //  - Gestión de usuarios legado: deshabilitada temporalmente
+    // ============================================================
+
+    // ============================================================
+    //  CONFIGURACIÓN GLOBAL
+    // ============================================================
+    let dbUrl = "";
+    let currentUser = null;
+    let isAdmin = false;
+    let currentView = 'vehiculos';
+    let vehiculosData = {};
+    let usuariosData = {};
+    let filteredData = {};
+    let activityLog = [];
+    let currentPage = 1;
+    const ITEMS_PER_PAGE = 10;
+
+    const modalVehicle = new bootstrap.Modal(document.getElementById('vehicleModal'));
+    const modalUser = new bootstrap.Modal(document.getElementById('userModal'));
+
+    // ============================================================
+    //  INICIALIZACIÓN
+    // ============================================================
+    async function init() {
+        dbUrl = firebaseConfig.databaseURL.replace(/\/?$/, '/');
+        addActivity('connect', 'Firebase inicializado');
+
+        auth.onAuthStateChanged(async (firebaseUser) => {
+            if (firebaseUser) {
+                await setCurrentUser(firebaseUser);
+            } else {
+                currentUser = null;
+                isAdmin = false;
+                showLogin();
+            }
+        });
+    }
+
+    // Llamadas REST autenticadas. Firebase Security Rules recibe auth.uid
+    // porque cada solicitud lleva el ID token del usuario conectado.
+    async function dbFetch(url, options = {}) {
+        const firebaseUser = auth.currentUser;
+        if (!firebaseUser) throw new Error('Usuario no autenticado');
+        const token = await firebaseUser.getIdToken();
+        const separator = url.includes('?') ? '&' : '?';
+        return window.fetch(`${url}${separator}auth=${encodeURIComponent(token)}`, options);
+    }
+
+    // ============================================================
+    //  LOGIN / LOGOUT
+    // ============================================================
+    function showLogin() {
+        document.getElementById('loginSection').style.display = 'flex';
+        document.getElementById('mainLayout').style.display = 'none';
+        document.getElementById('btnLogout').style.display = 'none';
+        document.getElementById('userNameDisplay').textContent = 'No autenticado';
+    }
+
+    function showApp() {
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('mainLayout').style.display = 'grid';
+        document.getElementById('btnLogout').style.display = 'inline-flex';
+        document.getElementById('userNameDisplay').textContent = currentUser ? currentUser.nombre : 'Usuario';
+    }
+
+    async function login(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginUser').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const errorEl = document.getElementById('loginError');
+
+        if (!email || !password) {
+            errorEl.textContent = 'Completa correo electrónico y contraseña.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        showLoading(true);
+        try {
+            errorEl.style.display = 'none';
+            await auth.signInWithEmailAndPassword(email, password);
+            // onAuthStateChanged continúa el proceso y valida el rol.
+        } catch (err) {
+            console.error(err);
+            errorEl.textContent = 'Correo o contraseña incorrectos.';
+            errorEl.style.display = 'block';
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    async function logout() {
+        try {
+            await auth.signOut();
+        } catch (e) {
+            console.error(e);
+        }
+        currentUser = null;
+        isAdmin = false;
+        showLogin();
+        showToast('Sesión cerrada', 'Has salido del sistema', 'info');
+        addActivity('delete', 'Cierre de sesión');
+    }
+
+    async function setCurrentUser(firebaseUser) {
+        try {
+            // La autorización real se obtiene del nodo protegido /roles/{uid}/rol.
+            const roleRes = await dbFetch(`${dbUrl}roles/${firebaseUser.uid}/rol.json`);
+            if (!roleRes.ok) throw new Error(`No se pudo validar el rol (${roleRes.status})`);
+            const rol = await roleRes.json();
+
+            if (rol !== 'Administrador') {
+                await auth.signOut();
+                showLogin();
+                const errorEl = document.getElementById('loginError');
+                errorEl.textContent = 'Tu cuenta no tiene permisos de Administrador.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            currentUser = {
+                id: firebaseUser.uid,
+                nombre: firebaseUser.displayName || firebaseUser.email || 'Administrador',
+                email: firebaseUser.email || '',
+                rol
+            };
+            isAdmin = true;
+
+            showApp();
+            await loadVehiculos();
+            setView('vehiculos');
+
+            // Gestión de cuentas Auth se hará después desde Firebase Console/Cloud Function.
+            // Se oculta el módulo legado para no volver a almacenar contraseñas en Realtime Database.
+            document.getElementById('configSection').style.display = 'none';
+            document.getElementById('btnToggleView').style.display = 'none';
+
+            showToast('Bienvenido', `Sesión segura iniciada como ${currentUser.nombre}`, 'success');
+            addActivity('sync', `Autenticado con Firebase Auth: ${currentUser.nombre}`);
+            addActivity('insert', 'Rol validado: Administrador');
+        } catch (e) {
+            console.error(e);
+            showToast('Error de autenticación', 'No se pudo validar tu rol de Administrador', 'error');
+            try { await auth.signOut(); } catch (_) {}
+            showLogin();
+        }
+    }
+
+    // ============================================================
+    //  CARGA DE DATOS
+    // ============================================================
+    async function loadVehiculos() {
+        try {
+            const res = await dbFetch(`${dbUrl}vehiculos.json`);
+            vehiculosData = (await res.json()) || {};
+            updateTipoDatalist();
+        } catch (e) { showToast('Error DB', 'No se pudieron cargar los vehículos', 'error'); }
+    }
+
+    // Mantiene el datalist de "Tipo" sincronizado con los valores reales
+    // presentes en la base de datos (incluyendo los que llegan por Excel),
+    // así el campo del formulario siempre refleja los datos reales.
+    function updateTipoDatalist() {
+        const datalist = document.getElementById('tipoOptions');
+        if (!datalist) return;
+        const existentes = new Set(Array.from(datalist.options).map(o => o.value));
+        Object.values(vehiculosData).forEach(v => {
+            if (v.Tipo && !existentes.has(v.Tipo)) {
+                const opt = document.createElement('option');
+                opt.value = v.Tipo;
+                datalist.appendChild(opt);
+                existentes.add(v.Tipo);
+            }
+        });
+    }
+
+    async function loadUsuarios() {
+        try {
+            const res = await dbFetch(`${dbUrl}usuarios.json`);
+            usuariosData = (await res.json()) || {};
+        } catch (e) { showToast('Error DB', 'No se pudieron cargar los usuarios', 'error'); }
+    }
+
+    // ============================================================
+    //  CAMBIO DE VISTA
+    // ============================================================
+    function setView(view) {
+        currentView = view;
+        currentPage = 1;
+        const titleEl = document.getElementById('viewTitle');
+        const recordCount = document.getElementById('recordCount');
+        const metricsTitle = document.getElementById('metricsTitle');
+        const metricsContent = document.getElementById('metricsContent');
+        const searchInput = document.getElementById('searchInput');
+        const btnNewLabel = document.getElementById('btnNewLabel');
+        const btnToggleLabel = document.getElementById('btnToggleLabel');
+        const configBtnText = document.querySelector('#configSection .sidebar-config-btn span');
+
+        if (view === 'vehiculos') {
+            titleEl.innerHTML = `<iconify-icon icon="mdi:table-large"></iconify-icon> Inventario de Vehículos`;
+            btnNewLabel.textContent = 'Nuevo Vehículo';
+            btnToggleLabel.innerHTML = '⚙️ Configuración';
+            configBtnText.textContent = 'Gestionar Usuarios';
+            metricsTitle.textContent = 'Métricas de Vehículos';
+            const vehicles = Object.values(vehiculosData);
+            const total = vehicles.length;
+            const withImg = vehicles.filter(v => v.Ruta_Imagen && v.Ruta_Imagen.trim() !== '').length;
+            metricsContent.innerHTML = `
+                <div class="db-metric"><span class="db-metric-label"><iconify-icon icon="mdi:car-multiple" width="16"></iconify-icon> Registros</span><span class="db-metric-value">${total}</span></div>
+                <div class="db-metric"><span class="db-metric-label"><iconify-icon icon="mdi:image-check" width="16"></iconify-icon> Con Imagen</span><span class="db-metric-value success">${withImg}</span></div>
+                <div class="db-metric"><span class="db-metric-label"><iconify-icon icon="mdi:image-off" width="16"></iconify-icon> Sin Imagen</span><span class="db-metric-value warning">${total - withImg}</span></div>
+            `;
+            recordCount.textContent = `${total} registros`;
+            searchInput.placeholder = 'Buscar vehículo, color, motor...';
+            document.getElementById('excelToolsWrapper').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('fileInputWrapper').style.display = 'none';
+            document.getElementById('btnImport').style.display = 'none';
+            document.getElementById('btnNew').style.display = isAdmin ? 'inline-flex' : 'none';
+            filteredData = { ...vehiculosData };
+            renderTableVehiculos();
+            searchInput.oninput = function(e) {
+                const q = e.target.value.toLowerCase();
+                filteredData = q ? Object.fromEntries(Object.entries(vehiculosData).filter(([k,v]) =>
+                    (v.Vehiculo && v.Vehiculo.toLowerCase().includes(q)) ||
+                    (v.Tipo && v.Tipo.toLowerCase().includes(q)) ||
+                    (v.Color && v.Color.toLowerCase().includes(q)) ||
+                    (v.Motor_Traccion && v.Motor_Traccion.toLowerCase().includes(q)) ||
+                    (v.Estado && v.Estado.toLowerCase().includes(q))
+                )) : { ...vehiculosData };
+                currentPage = 1;
+                renderTableVehiculos();
+            };
+        } else { // usuarios
+            titleEl.innerHTML = `<iconify-icon icon="mdi:account-group"></iconify-icon> Gestión de Usuarios`;
+            btnNewLabel.textContent = 'Nuevo Usuario';
+            btnToggleLabel.innerHTML = '🚗 Vehículos';
+            configBtnText.textContent = 'Volver a Vehículos';
+            metricsTitle.textContent = 'Métricas de Usuarios';
+            const users = Object.values(usuariosData);
+            const total = users.length;
+            const admins = users.filter(u => u.rol === 'Administrador').length;
+            metricsContent.innerHTML = `
+                <div class="db-metric"><span class="db-metric-label"><iconify-icon icon="mdi:account-multiple" width="16"></iconify-icon> Total</span><span class="db-metric-value">${total}</span></div>
+                <div class="db-metric"><span class="db-metric-label"><iconify-icon icon="mdi:shield-account" width="16"></iconify-icon> Administradores</span><span class="db-metric-value success">${admins}</span></div>
+                <div class="db-metric"><span class="db-metric-label"><iconify-icon icon="mdi:account" width="16"></iconify-icon> Usuarios</span><span class="db-metric-value warning">${total - admins}</span></div>
+            `;
+            recordCount.textContent = `${total} registros`;
+            searchInput.placeholder = 'Buscar nombre, email, rol...';
+            document.getElementById('excelToolsWrapper').style.display = 'none';
+            document.getElementById('fileInputWrapper').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('btnImport').style.display = isAdmin ? 'inline-flex' : 'none';
+            document.getElementById('btnNew').style.display = isAdmin ? 'inline-flex' : 'none';
+            filteredData = { ...usuariosData };
+            renderTableUsuarios();
+            searchInput.oninput = function(e) {
+                const q = e.target.value.toLowerCase();
+                filteredData = q ? Object.fromEntries(Object.entries(usuariosData).filter(([k,u]) =>
+                    (u.nombre && u.nombre.toLowerCase().includes(q)) ||
+                    (u.email && u.email.toLowerCase().includes(q)) ||
+                    (u.rol && u.rol.toLowerCase().includes(q))
+                )) : { ...usuariosData };
+                currentPage = 1;
+                renderTableUsuarios();
+            };
+        }
+        document.getElementById('metricLastSync').textContent = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function toggleView() {
+        showToast('Gestión de usuarios', 'Por seguridad, las cuentas se administran temporalmente desde Firebase Authentication.', 'info');
+        setView('vehiculos');
+    }
+
+    // ============================================================
+    //  RENDER TABLA VEHÍCULOS
+    // ============================================================
+    function renderTableVehiculos() {
+        const tbody = document.getElementById('tableBody');
+        const thead = document.getElementById('tableHead');
+        thead.innerHTML = `<tr><th>Imagen</th><th>Vehículo</th><th>Tipo</th><th>Color</th><th>Motor/Tracción</th><th>Transmisión</th><th>A/C</th><th>Ruta Imagen</th><th>Estado</th><th class="text-center">Acciones</th></tr>`;
+        tbody.innerHTML = '';
+
+        const keys = Object.keys(filteredData);
+        if (keys.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10" class="empty-db"><iconify-icon icon="mdi:database-off"></iconify-icon><h5 class="mt-3">No hay vehículos registrados</h5><p class="text-muted">Crea un nuevo registro o importa desde Excel/CSV</p></td></tr>`;
+            document.getElementById('pagination').style.display = 'none';
+            return;
+        }
+
+        const totalPages = Math.ceil(keys.length / ITEMS_PER_PAGE);
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        const paginatedKeys = keys.slice(start, start + ITEMS_PER_PAGE);
+
+        paginatedKeys.forEach(key => {
+            const v = filteredData[key];
+            const imagePath = v.Ruta_Imagen ? `images/nuevos/${v.Ruta_Imagen}` : '';
+            const estado = v.Estado || 'Operativo';
+            const estadoClass = estado === 'Operativo' ? 'operativo' : estado === 'En Mantenimiento' ? 'mantenimiento' : 'revision';
+            const estadoIcon = estado === 'Operativo' ? 'mdi:check-circle' : estado === 'En Mantenimiento' ? 'mdi:wrench' : 'mdi:alert';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="cell-img">
+                    ${imagePath ? 
+                        `<img src="${imagePath}" class="vehicle-thumb" alt="${v.Vehiculo}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder-thumb\\'><iconify-icon icon=\\'mdi:image-off\\' width=\\'24\\'></iconify-icon></div>'">` :
+                        `<div class="placeholder-thumb"><iconify-icon icon="mdi:image-off" width="24"></iconify-icon></div>`
+                    }
+                </td>
+                <td class="cell-vehicle"><div class="vehicle-name-db">${v.Vehiculo || '-'}</div>${v.Caracteristicas ? `<div class="vehicle-specs">${v.Caracteristicas}</div>` : ''}</td>
+                <td>${v.Tipo ? `<span class="badge-db operativo">${v.Tipo}</span>` : '<span class="text-muted">-</span>'}</td>
+                <td class="cell-mono">${v.Color || '-'}</td>
+                <td class="cell-mono">${v.Motor_Traccion || '-'}</td>
+                <td class="cell-mono">${v.Transmision || '-'}</td>
+                <td class="cell-mono">${v.Aire_Acondicionado || '-'}</td>
+                <td><span class="cell-path ${!v.Ruta_Imagen ? 'missing' : ''}">${v.Ruta_Imagen || 'No asignada'}</span></td>
+                <td><span class="badge-db ${estadoClass}"><iconify-icon icon="${estadoIcon}" width="14"></iconify-icon> ${estado}</span></td>
+                <td><div class="actions-db">${isAdmin ? `<button class="btn-action-db btn-edit-db" onclick="openModalVehicle('${key}')" title="Editar"><iconify-icon icon="mdi:pencil" width="16"></iconify-icon></button><button class="btn-action-db btn-delete-db" onclick="deleteVehicle('${key}')" title="Eliminar"><iconify-icon icon="mdi:trash-can" width="16"></iconify-icon></button>` : `<span class="text-muted" style="font-size:0.8rem;">Solo lectura</span>`}</div></td>
+            `;
+            tbody.appendChild(tr);
+        });
+        renderPagination(totalPages);
+    }
+
+    // ============================================================
+    //  RENDER TABLA USUARIOS
+    // ============================================================
+    function renderTableUsuarios() {
+        const tbody = document.getElementById('tableBody');
+        const thead = document.getElementById('tableHead');
+        thead.innerHTML = `<tr><th>#</th><th>Nombre</th><th>Email</th><th>Rol</th><th class="text-center">Acciones</th></tr>`;
+        tbody.innerHTML = '';
+
+        const keys = Object.keys(filteredData);
+        if (keys.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="empty-db"><iconify-icon icon="mdi:account-off"></iconify-icon><h5 class="mt-3">No hay usuarios registrados</h5><p class="text-muted">Crea un nuevo usuario o importa desde Excel/CSV</p></td></tr>`;
+            document.getElementById('pagination').style.display = 'none';
+            return;
+        }
+
+        const totalPages = Math.ceil(keys.length / ITEMS_PER_PAGE);
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        const paginatedKeys = keys.slice(start, start + ITEMS_PER_PAGE);
+
+        paginatedKeys.forEach((key, index) => {
+            const u = filteredData[key];
+            const rolClass = u.rol === 'Administrador' ? 'admin' : u.rol === 'Invitado' ? 'invitado' : 'usuario';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${start + index + 1}</td>
+                <td><strong>${u.nombre || '-'}</strong></td>
+                <td>${u.email || '-'}</td>
+                <td><span class="badge-db ${rolClass}">${u.rol || 'Usuario'}</span></td>
+                <td><div class="actions-db">${isAdmin ? `<button class="btn-action-db btn-edit-db" onclick="openModalUser('${key}')" title="Editar"><iconify-icon icon="mdi:pencil" width="16"></iconify-icon></button><button class="btn-action-db btn-delete-db" onclick="deleteUser('${key}')" title="Eliminar"><iconify-icon icon="mdi:trash-can" width="16"></iconify-icon></button>` : `<span class="text-muted" style="font-size:0.8rem;">Solo lectura</span>`}</div></td>
+            `;
+            tbody.appendChild(tr);
+        });
+        renderPagination(totalPages);
+    }
+
+    // ============================================================
+    //  PAGINACIÓN
+    // ============================================================
+    function renderPagination(totalPages) {
+        const pagination = document.getElementById('pagination');
+        if (totalPages <= 1) { pagination.style.display = 'none'; return; }
+        pagination.style.display = 'flex';
+        let html = `<button class="page-db" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><iconify-icon icon="mdi:chevron-left"></iconify-icon></button>`;
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                html += `<button class="page-db ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                html += `<span class="page-db" style="cursor:default;border:none;">...</span>`;
+            }
+        }
+        html += `<button class="page-db" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><iconify-icon icon="mdi:chevron-right"></iconify-icon></button>`;
+        pagination.innerHTML = html;
+    }
+
+    function changePage(page) {
+        currentPage = page;
+        if (currentView === 'vehiculos') renderTableVehiculos();
+        else renderTableUsuarios();
+    }
+
+    // ============================================================
+    //  CRUD VEHÍCULOS
+    // ============================================================
+    // Función #2 de gestión: "Agregar registro por medio del botón Nuevo
+    // Registro". Enruta al modal correcto según la vista activa.
+    function openModal(key = null) {
+        if (currentView === 'vehiculos') openModalVehicle(key);
+        else openModalUser(key);
+    }
+
+    function openModalVehicle(key = null) {
+        if (!isAdmin) { showToast('Acceso denegado', 'Solo administradores pueden editar', 'warning'); return; }
+        document.getElementById('vehicleForm').reset();
+        document.getElementById('imagePreview').innerHTML = `<div class="preview-placeholder-db"><iconify-icon icon="mdi:image-off" width="48" style="color:#cbd5e1;"></iconify-icon><p class="mb-0 mt-2">Vista previa no disponible</p></div>`;
+        if (key && vehiculosData[key]) {
+            document.getElementById('modalTitle').innerHTML = `<iconify-icon icon="mdi:database-edit"></iconify-icon> Editar Vehículo`;
+            document.getElementById('editId').value = key;
+            const v = vehiculosData[key];
+            document.getElementById('f_vehiculo').value = v.Vehiculo || '';
+            document.getElementById('f_tipo').value = v.Tipo || '';
+            document.getElementById('f_color').value = v.Color || '';
+            document.getElementById('f_motor').value = v.Motor_Traccion || '';
+            document.getElementById('f_transmision').value = v.Transmision || '';
+            document.getElementById('f_ac').value = v.Aire_Acondicionado || '';
+            document.getElementById('f_estado').value = v.Estado || 'Operativo';
+            document.getElementById('f_caracteristicas').value = v.Caracteristicas || '';
+            document.getElementById('f_seguro').value = v.Seguro_Asistencia || '';
+            document.getElementById('f_otros').value = v.Otros || '';
+            document.getElementById('f_ruta_imagen').value = v.Ruta_Imagen || '';
+            if (v.Ruta_Imagen) previewImage();
+        } else {
+            document.getElementById('modalTitle').innerHTML = `<iconify-icon icon="mdi:database-plus"></iconify-icon> Nuevo Vehículo`;
+            document.getElementById('editId').value = '';
+        }
+        modalVehicle.show();
+    }
+
+    function previewImage() {
+        const ruta = document.getElementById('f_ruta_imagen').value;
+        const preview = document.getElementById('imagePreview');
+        if (ruta) {
+            preview.innerHTML = `<img src="images/nuevos/${ruta}" alt="Preview" onerror="this.parentElement.innerHTML='<div class=\\'preview-placeholder-db\\'><iconify-icon icon=\\'mdi:image-broken\\' width=\\'48\\' style=\\'color:#ef4444;\\'></iconify-icon><p class=\\'mb-0 mt-2\\' style=\\'color:#ef4444;\\'>Archivo no encontrado</p></div>'">`;
+        } else {
+            preview.innerHTML = `<div class="preview-placeholder-db"><iconify-icon icon="mdi:image-off" width="48" style="color:#cbd5e1;"></iconify-icon><p class="mb-0 mt-2">Vista previa no disponible</p></div>`;
+        }
+    }
+
+    async function saveVehicle() {
+        if (!isAdmin) { showToast('Acceso denegado', 'No tienes permisos', 'error'); return; }
+        const id = document.getElementById('editId').value;
+        const vehiculo = document.getElementById('f_vehiculo').value.trim();
+        if (!vehiculo) { showToast('Validación', 'El campo Vehículo es obligatorio', 'warning'); return; }
+
+        const payload = {
+            Vehiculo: vehiculo,
+            Tipo: document.getElementById('f_tipo').value,
+            Color: document.getElementById('f_color').value,
+            Motor_Traccion: document.getElementById('f_motor').value,
+            Transmision: document.getElementById('f_transmision').value,
+            Aire_Acondicionado: document.getElementById('f_ac').value,
+            Estado: document.getElementById('f_estado').value,
+            Caracteristicas: document.getElementById('f_caracteristicas').value,
+            Seguro_Asistencia: document.getElementById('f_seguro').value,
+            Otros: document.getElementById('f_otros').value,
+            Ruta_Imagen: document.getElementById('f_ruta_imagen').value
+        };
+
+        const method = id ? 'PATCH' : 'POST';
+        const url = id ? `${dbUrl}vehiculos/${id}.json` : `${dbUrl}vehiculos.json`;
+
+        showLoading(true);
+        try {
+            const res = await dbFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (!res.ok) throw new Error('Error');
+            showToast('Éxito', id ? 'Vehículo actualizado' : 'Vehículo creado', 'success');
+            addActivity(id ? 'update' : 'insert', `${id ? 'Actualizado' : 'Creado'}: ${vehiculo}`);
+            modalVehicle.hide();
+            await loadVehiculos();
+            setView('vehiculos');
+        } catch (e) {
+            showToast('Error DB', 'No se pudo guardar', 'error');
+            addActivity('error', `Fallo al ${id ? 'actualizar' : 'crear'}: ${vehiculo}`);
+        }
+        showLoading(false);
+    }
+
+    function deleteVehicle(key) {
+        if (!isAdmin) { showToast('Acceso denegado', 'No tienes permisos', 'error'); return; }
+        const v = vehiculosData[key];
+        if (!v) return;
+        if (!confirm(`¿Eliminar vehículo "${v.Vehiculo}"?`)) return;
+        showLoading(true);
+        dbFetch(`${dbUrl}vehiculos/${key}.json`, { method: 'DELETE' })
+            .then(() => {
+                showToast('Eliminado', 'Vehículo eliminado', 'success');
+                addActivity('delete', `Eliminado: ${v.Vehiculo}`);
+                loadVehiculos().then(() => setView('vehiculos'));
+            })
+            .catch(() => {
+                showToast('Error', 'No se pudo eliminar', 'error');
+                addActivity('error', `Fallo al eliminar: ${v.Vehiculo}`);
+            })
+            .finally(() => showLoading(false));
+    }
+
+    // ============================================================
+    //  CRUD USUARIOS
+    // ============================================================
+    function openModalUser(key = null) {
+        if (!isAdmin) { showToast('Acceso denegado', 'Solo administradores pueden gestionar usuarios', 'warning'); return; }
+        document.getElementById('userForm').reset();
+        if (key && usuariosData[key]) {
+            document.getElementById('userModalTitle').innerHTML = `<iconify-icon icon="mdi:account-edit"></iconify-icon> Editar Usuario`;
+            document.getElementById('userEditId').value = key;
+            const u = usuariosData[key];
+            document.getElementById('f_nombre').value = u.nombre || '';
+            document.getElementById('f_email').value = u.email || '';
+            document.getElementById('f_password').value = '';
+            document.getElementById('f_rol').value = u.rol || 'Usuario';
+        } else {
+            document.getElementById('userModalTitle').innerHTML = `<iconify-icon icon="mdi:account-plus"></iconify-icon> Nuevo Usuario`;
+            document.getElementById('userEditId').value = '';
+            document.getElementById('f_password').value = '';
+            document.getElementById('f_rol').value = 'Usuario';
+        }
+        modalUser.show();
+    }
+
+    async function saveUser() {
+        if (!isAdmin) { showToast('Acceso denegado', 'No tienes permisos', 'error'); return; }
+        const id = document.getElementById('userEditId').value;
+        const nombre = document.getElementById('f_nombre').value.trim();
+        const email = document.getElementById('f_email').value.trim();
+        const password = document.getElementById('f_password').value.trim();
+        const rol = document.getElementById('f_rol').value;
+
+        if (!nombre) { showToast('Validación', 'El campo Nombre es obligatorio', 'warning'); return; }
+        if (!id && !password) { showToast('Validación', 'La contraseña es obligatoria para nuevos usuarios', 'warning'); return; }
+        if (password && password.length < 6) { showToast('Validación', 'La contraseña debe tener al menos 6 caracteres', 'warning'); return; }
+
+        const existing = Object.values(usuariosData).find(u => u.nombre && u.nombre.toLowerCase() === nombre.toLowerCase());
+        if (existing) {
+            const existingId = Object.keys(usuariosData).find(k => usuariosData[k].nombre === existing.nombre);
+            if (existingId !== id) {
+                showToast('Error', 'Ya existe un usuario con ese nombre', 'error');
+                return;
+            }
+        }
+
+        const payload = { nombre, email, rol };
+        if (password) payload.password = password;
+        if (id && !password) delete payload.password;
+
+        const method = id ? 'PATCH' : 'POST';
+        const url = id ? `${dbUrl}usuarios/${id}.json` : `${dbUrl}usuarios.json`;
+
+        showLoading(true);
+        try {
+            const res = await dbFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (!res.ok) throw new Error('Error');
+            showToast('Éxito', id ? 'Usuario actualizado' : 'Usuario creado', 'success');
+            addActivity(id ? 'update' : 'insert', `${id ? 'Actualizado' : 'Creado'}: ${nombre}`);
+            modalUser.hide();
+            await loadUsuarios();
+            setView('usuarios');
+        } catch (e) {
+            showToast('Error DB', 'No se pudo guardar el usuario', 'error');
+            addActivity('error', `Fallo al ${id ? 'actualizar' : 'crear'}: ${nombre}`);
+        }
+        showLoading(false);
+    }
+
+    function deleteUser(key) {
+        if (!isAdmin) { showToast('Acceso denegado', 'No tienes permisos', 'error'); return; }
+        const u = usuariosData[key];
+        if (!u) return;
+        if (u.nombre === currentUser.nombre) {
+            showToast('Acción no permitida', 'No puedes eliminar tu propio usuario', 'warning');
+            return;
+        }
+        if (!confirm(`¿Eliminar al usuario "${u.nombre}"?`)) return;
+        showLoading(true);
+        dbFetch(`${dbUrl}usuarios/${key}.json`, { method: 'DELETE' })
+            .then(() => {
+                showToast('Eliminado', 'Usuario eliminado', 'success');
+                addActivity('delete', `Eliminado: ${u.nombre}`);
+                loadUsuarios().then(() => setView('usuarios'));
+            })
+            .catch(() => {
+                showToast('Error', 'No se pudo eliminar', 'error');
+                addActivity('error', `Fallo al eliminar: ${u.nombre}`);
+            })
+            .finally(() => showLoading(false));
+    }
+
+    // ============================================================
+    //  GESTIÓN DE VEHÍCULOS POR EXCEL (3 funciones)
+    //  1) Agregar registros desde el formato de Excel (append)
+    //  2) Agregar registro manual -> ver función openModal()
+    //  3) Limpiar y cargar nueva data desde Excel (reemplazo total)
+    // ============================================================
+    let pendingImportMode = 'append';
+
+    function mapExcelRowToVehiculo(row) {
+        const get = (...keys) => {
+            for (const k of keys) {
+                if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') return String(row[k]).trim();
+            }
+            return '';
+        };
+        return {
+            Vehiculo: get('Vehículo', 'Vehiculo', 'vehiculo'),
+            Tipo: get('Tipo', 'tipo'),
+            Color: get('Color', 'color'),
+            Motor_Traccion: get('Motor/Tracción', 'Motor/Traccion', 'motor', 'Motor_Traccion'),
+            Transmision: get('Transmisión', 'Transmision', 'transmision'),
+            Aire_Acondicionado: get('Aire Acondicionado', 'ac', 'Aire_Acondicionado'),
+            Estado: get('Estado', 'estado') || 'Operativo',
+            Caracteristicas: get('Características Especiales', 'Caracteristicas Especiales', 'caracteristicas', 'Caracteristicas'),
+            Seguro_Asistencia: get('Seguro y Asistencia', 'seguro', 'Seguro_Asistencia'),
+            Otros: get('Otros', 'otros'),
+            Ruta_Imagen: get('Ruta_Imagen', 'ruta_imagen', 'Ruta de Imagen')
+        };
+    }
+
+    function triggerVehiculoImport(mode) {
+        if (!isAdmin) { showToast('Acceso denegado', 'Solo administradores pueden cargar datos', 'warning'); return; }
+        pendingImportMode = mode;
+        const input = document.getElementById('vehiculoFileUpload');
+        input.value = '';
+        input.click();
+    }
+
+    function handleVehiculoExcelFile() {
+        const input = document.getElementById('vehiculoFileUpload');
+        if (!input.files.length) return;
+        const file = input.files[0];
+
+        if (pendingImportMode === 'replace') {
+            const total = Object.keys(vehiculosData).length;
+            const ok = confirm(
+                `⚠️ Esto ELIMINARÁ los ${total} registros actuales del nodo Vehículos ` +
+                `y los reemplazará por el contenido del archivo "${file.name}".\n\n` +
+                `Esta acción no se puede deshacer. ¿Deseas continuar?`
+            );
+            if (!ok) { input.value = ''; return; }
+        }
+        processVehiculoExcel(file, pendingImportMode);
+    }
+
+    async function processVehiculoExcel(file, mode) {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            showLoading(true);
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.SheetNames[0];
+                const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+                if (excelData.length === 0) {
+                    showToast('Error', 'El archivo está vacío', 'error');
+                    showLoading(false);
+                    return;
+                }
+
+                // Función 3: limpiar el nodo vehículos antes de cargar la nueva data
+                if (mode === 'replace') {
+                    await dbFetch(`${dbUrl}vehiculos.json`, { method: 'DELETE' });
+                    addActivity('delete', 'Nodo Vehículos limpiado antes de la carga masiva');
+                }
+
+                let successCount = 0, errorCount = 0;
+                for (const row of excelData) {
+                    const cleanRow = mapExcelRowToVehiculo(row);
+                    if (!cleanRow.Vehiculo) { errorCount++; continue; }
+                    const res = await dbFetch(`${dbUrl}vehiculos.json`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(cleanRow)
+                    });
+                    if (res.ok) successCount++; else errorCount++;
+                }
+
+                await loadVehiculos();
+                setView('vehiculos');
+
+                const accion = mode === 'replace' ? 'Reemplazo total desde Excel' : 'Importación (agregar) desde Excel';
+                addActivity('insert', `${accion}: ${successCount} vehículos cargados`);
+
+                if (errorCount === 0) {
+                    showToast(
+                        mode === 'replace' ? 'Datos Reemplazados' : 'Importación Completa',
+                        `${successCount} vehículos cargados correctamente`,
+                        'success'
+                    );
+                } else {
+                    showToast('Importación Parcial', `${successCount} OK, ${errorCount} con errores (sin campo "Vehículo")`, 'warning');
+                }
+            } catch (err) {
+                showToast('Error', 'No se pudo procesar el archivo Excel', 'error');
+                addActivity('error', 'Fallo al procesar carga de Excel de vehículos');
+            } finally {
+                showLoading(false);
+                document.getElementById('vehiculoFileUpload').value = '';
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function downloadVehiculoTemplate() {
+        const template = [{
+            'Vehículo': 'Kia Soul 2023',
+            'Tipo': 'SUV / Crossover',
+            'Color': 'Rojo Metalizado',
+            'Motor/Tracción': '2.0L 4x2',
+            'Transmisión': 'Automática',
+            'Aire Acondicionado': 'Sí',
+            'Estado': 'Operativo',
+            'Características Especiales': 'GPS, Bluetooth, Cámara de retroceso',
+            'Seguro y Asistencia': 'Seguro y asistencia vial 24/7',
+            'Otros': 'Precios incluyen papelería, contrato e impuestos',
+            'Ruta_Imagen': 'nombre-archivo.jpg'
+        }];
+        try {
+            const ws = XLSX.utils.json_to_sheet(template);
+            ws['!cols'] = Object.keys(template[0]).map(() => ({ wch: 26 }));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Vehiculos');
+            XLSX.writeFile(wb, 'plantilla_vehiculos_shalom.xlsx');
+            showToast('Plantilla descargada', 'Usa este formato de columnas para tus cargas de Excel', 'success');
+        } catch (err) {
+            showToast('Error', 'No se pudo generar la plantilla', 'error');
+        }
+    }
+
+    // ============================================================
+    //  EXPORTAR A EXCEL
+    // ============================================================
+    function exportToExcel() {
+        let dataToExport = [];
+        let filename = '';
+        let sheetName = '';
+        const fecha = new Date().toISOString().slice(0, 10);
+
+        if (currentView === 'vehiculos') {
+            dataToExport = Object.values(vehiculosData).map(v => ({
+                'Vehículo': v.Vehiculo || '',
+                'Tipo': v.Tipo || '',
+                'Color': v.Color || '',
+                'Motor/Tracción': v.Motor_Traccion || '',
+                'Transmisión': v.Transmision || '',
+                'Aire Acondicionado': v.Aire_Acondicionado || '',
+                'Estado': v.Estado || '',
+                'Características Especiales': v.Caracteristicas || '',
+                'Seguro y Asistencia': v.Seguro_Asistencia || '',
+                'Otros': v.Otros || '',
+                'Ruta_Imagen': v.Ruta_Imagen || ''
+            }));
+            filename = `vehiculos_shalom_${fecha}.xlsx`;
+            sheetName = 'Vehiculos';
+        } else {
+            if (!isAdmin) { showToast('Acceso denegado', 'Solo administradores pueden exportar usuarios', 'warning'); return; }
+            dataToExport = Object.values(usuariosData).map(u => ({
+                'Nombre': u.nombre || '',
+                'Email': u.email || '',
+                'Rol': u.rol || ''
+            }));
+            filename = `usuarios_shalom_${fecha}.xlsx`;
+            sheetName = 'Usuarios';
+        }
+
+        if (dataToExport.length === 0) {
+            showToast('Atención', 'No hay datos para exportar', 'warning');
+            return;
+        }
+
+        try {
+            const ws = XLSX.utils.json_to_sheet(dataToExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            XLSX.writeFile(wb, filename);
+            showToast('Exportado', `${dataToExport.length} registros exportados a ${filename}`, 'success');
+            addActivity('insert', `Exportación a Excel: ${dataToExport.length} registros de ${sheetName.toLowerCase()}`);
+        } catch (err) {
+            showToast('Error', 'No se pudo generar el archivo Excel', 'error');
+        }
+    }
+
+    // ============================================================
+    //  IMPORTAR DATOS
+    // ============================================================
+    function importData() {
+        if (!isAdmin) { showToast('Acceso denegado', 'Solo administradores pueden importar', 'warning'); return; }
+        const fileUpload = document.getElementById('fileUpload');
+        if (!fileUpload.files.length) {
+            showToast('Atención', 'Selecciona un archivo Excel o CSV', 'warning');
+            return;
+        }
+
+        const file = fileUpload.files[0];
+        const reader = new FileReader();
+
+        reader.onload = async function(e) {
+            showLoading(true);
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.SheetNames[0];
+                const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+                if (excelData.length === 0) {
+                    showToast('Error', 'El archivo está vacío', 'error');
+                    return;
+                }
+
+                let successCount = 0, errorCount = 0;
+                const targetNode = currentView === 'vehiculos' ? 'vehiculos' : 'usuarios';
+
+                for (let row of excelData) {
+                    let cleanRow = {};
+                    if (targetNode === 'vehiculos') {
+                        cleanRow = {
+                            Vehiculo: row["Vehículo"] || row["vehiculo"] || "",
+                            Tipo: row["Tipo"] || row["tipo"] || "",
+                            Color: row["Color"] || row["color"] || "",
+                            Motor_Traccion: row["Motor/Tracción"] || row["motor"] || "",
+                            Transmision: row["Transmisión"] || row["transmision"] || "",
+                            Aire_Acondicionado: row["Aire Acondicionado"] || row["ac"] || "",
+                            Estado: row["Estado"] || row["estado"] || "Operativo",
+                            Caracteristicas: row["Características Especiales"] || row["caracteristicas"] || "",
+                            Seguro_Asistencia: row["Seguro y Asistencia"] || row["seguro"] || "",
+                            Otros: row["Otros"] || row["otros"] || "",
+                            Ruta_Imagen: row["Ruta_Imagen"] || row["ruta_imagen"] || ""
+                        };
+                    } else {
+                        cleanRow = {
+                            nombre: row["Nombre"] || row["nombre"] || "",
+                            email: row["Email"] || row["email"] || "",
+                            password: row["Contraseña"] || row["password"] || "123456",
+                            rol: row["Rol"] || row["rol"] || "Usuario"
+                        };
+                    }
+
+                    const res = await dbFetch(`${dbUrl}${targetNode}.json`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(cleanRow)
+                    });
+                    if (res.ok) successCount++;
+                    else errorCount++;
+                }
+
+                document.getElementById('fileUpload').value = '';
+                document.getElementById('fileLabel').innerHTML = `<iconify-icon icon="mdi:file-upload"></iconify-icon><span>Excel/CSV</span>`;
+
+                if (targetNode === 'vehiculos') {
+                    await loadVehiculos();
+                    setView('vehiculos');
+                } else {
+                    await loadUsuarios();
+                    setView('usuarios');
+                }
+
+                addActivity('insert', `Importación masiva: ${successCount} registros en ${targetNode}`);
+                if (errorCount === 0) {
+                    showToast('Importación Completa', `${successCount} registros importados`, 'success');
+                } else {
+                    showToast('Importación Parcial', `${successCount} OK, ${errorCount} errores`, 'warning');
+                }
+            } catch (err) {
+                showToast('Error', 'Error al procesar el archivo', 'error');
+            } finally {
+                showLoading(false);
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    // ============================================================
+    //  ACTIVITY LOG
+    // ============================================================
+    function addActivity(type, message) {
+        const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        activityLog.unshift({ time, type, message });
+        if (activityLog.length > 6) activityLog.pop();
+        renderActivityLog();
+    }
+
+    function renderActivityLog() {
+        const container = document.getElementById('activityLog');
+        container.innerHTML = activityLog.map(item => `
+            <div class="activity-item">
+                <span class="activity-time">${item.time}</span>
+                <div class="activity-dot ${item.type}"></div>
+                <span>${item.message}</span>
+            </div>
+        `).join('');
+    }
+
+    // ============================================================
+    //  TOAST y LOADING
+    // ============================================================
+    function showToast(title, message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast-db ${type}`;
+        const icons = { success: 'mdi:check-circle', error: 'mdi:alert-circle', warning: 'mdi:alert', info: 'mdi:information' };
+        const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: '#3b82f6' };
+        toast.innerHTML = `
+            <iconify-icon icon="${icons[type]}" class="toast-icon-db" style="color:${colors[type]}"></iconify-icon>
+            <div class="toast-content-db"><div class="toast-title-db">${title}</div><div class="toast-msg-db">${message}</div></div>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'slideInDb 0.3s ease reverse';
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    }
+
+    function showLoading(show) {
+        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
